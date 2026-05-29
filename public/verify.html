@@ -106,12 +106,16 @@
       if (el) {
         const paramName = fieldMapping[id];
         const paramVal = params.get(paramName);
-        if (paramVal) {
+        if (paramVal && paramVal !== "undefined" && paramVal !== "null") {
           el.innerHTML = decodeURIComponent(paramVal);
         } else {
           // Fallback to localStorage if any saved data
           const savedData = localStorage.getItem('patient_field_' + id);
-          if (savedData) el.innerHTML = savedData;
+          if (savedData) {
+            el.innerHTML = savedData;
+          } else if (id.startsWith('val-')) {
+            el.innerHTML = "Negative";
+          }
         }
 
         // Save on input so manual user edits persist locally as requested

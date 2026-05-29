@@ -206,9 +206,23 @@ export default function App() {
     });
   };
 
+  // Helper to extract test results or default to Negative as required
+  const getTestResultVal = (report: PatientReport, nameKey: string): string => {
+    if (!report || !report.tests) return "Negative";
+    const found = report.tests.find(t => 
+      t.name.toLowerCase().includes(nameKey.toLowerCase())
+    );
+    return found ? found.result : "Negative";
+  };
+
   // Generate dynamic QR code URL based on production host URL in Serverless HTML mode
+  const hcvVal = activeReport ? getTestResultVal(activeReport, "HCV") : "Negative";
+  const hepBVal = activeReport ? getTestResultVal(activeReport, "Hepatitis B") : "Negative";
+  const hivVal = activeReport ? getTestResultVal(activeReport, "HIV") : "Negative";
+  const tphaVal = activeReport ? getTestResultVal(activeReport, "TPHA") : "Negative";
+
   const verificationLink = activeReport
-    ? `${customBaseUrl}/verify.html?id=${activeReport.id}&name=${encodeURIComponent(activeReport.name)}&age=${activeReport.age}&gender=${activeReport.gender}&company=${encodeURIComponent(activeReport.company)}&passport=${encodeURIComponent(activeReport.passportNo)}&phone=${activeReport.phone || ""}&doctor=${encodeURIComponent(activeReport.doctor || "sadam adan Ahmed")}&date=${activeReport.resultDate}&hcv=${encodeURIComponent(activeReport.hcv)}&hepb=${encodeURIComponent(activeReport.hepB)}&hiv=${encodeURIComponent(activeReport.hiv)}&tpha=${encodeURIComponent(activeReport.tpha)}`
+    ? `${customBaseUrl}/verify.html?id=${activeReport.id}&name=${encodeURIComponent(activeReport.name)}&age=${activeReport.age}&gender=${activeReport.gender}&company=${encodeURIComponent(activeReport.company)}&passport=${encodeURIComponent(activeReport.passportNo)}&phone=${activeReport.phone || ""}&doctor=${encodeURIComponent(activeReport.doctor || "sadam adan Ahmed")}&date=${activeReport.resultDate}&hcv=${encodeURIComponent(hcvVal)}&hepb=${encodeURIComponent(hepBVal)}&hiv=${encodeURIComponent(hivVal)}&tpha=${encodeURIComponent(tphaVal)}`
     : "";
 
   const qrCodeUrl = verificationLink
