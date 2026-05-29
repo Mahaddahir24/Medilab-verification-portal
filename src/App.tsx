@@ -211,7 +211,9 @@ export default function App() {
     : window.location.origin;
 
   const verificationLink = activeReport
-    ? `${targetBaseUrl}/Lab_Track/php/verify.php?token=${activeReport.token || "a3b8899c3a"}`
+    ? qrTargetEnv === "production"
+      ? `https://mymedilabscom.vercel.app/Lab_Track/php/verify.php?token=${activeReport.token || "a3b8899c3a"}`
+      : `${window.location.origin}/verify.html?id=${activeReport.id}&name=${encodeURIComponent(activeReport.name)}&age=${activeReport.age}&gender=${activeReport.gender}&company=${encodeURIComponent(activeReport.company)}&passport=${encodeURIComponent(activeReport.passportNo)}&phone=${activeReport.phone || ""}&doctor=${encodeURIComponent(activeReport.doctor || "sadam adan Ahmed")}&date=${activeReport.resultDate}&hcv=${encodeURIComponent(activeReport.hcv)}&hepb=${encodeURIComponent(activeReport.hepB)}&hiv=${encodeURIComponent(activeReport.hiv)}&tpha=${encodeURIComponent(activeReport.tpha)}`
     : "";
 
   const qrCodeUrl = verificationLink
@@ -390,7 +392,13 @@ export default function App() {
                 : "Generates a sandbox barcode for immediate testing on the local workspace inside the AI Studio preview."}
             </p>
 
-            <div className="bg-white p-3.5 rounded-xl self-center shadow-lg border-2 border-slate-300 relative group transition-all duration-300 hover:scale-[1.02]">
+            <a
+              href={verificationLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Click to open verification link"
+              className="bg-white p-3.5 rounded-xl self-center shadow-lg border-2 border-slate-300 relative group transition-all duration-300 hover:scale-[1.02] cursor-pointer block"
+            >
               {activeReport ? (
                 <>
                   <img
@@ -409,7 +417,7 @@ export default function App() {
                   Generating QR...
                 </div>
               )}
-            </div>
+            </a>
 
             <div className="bg-blue-950/35 border border-blue-900/50 p-3 rounded-xl text-xs text-blue-200">
               <div className="flex items-center justify-between mb-1">
@@ -741,18 +749,25 @@ export default function App() {
                   <div className="qr-section">
                     <div style={{ background: "#fff", width: "80px", height: "80px", margin: "auto", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid #eee", borderRadius: "4px" }}>
                       {activeReport ? (
-                        <img
-                          src={qrCodeUrl}
-                          alt="Verification QR"
-                          className="w-20 h-20 select-none"
-                          style={{ width: "80px", height: "80px" }}
-                          referrerPolicy="no-referrer"
-                        />
+                        <a href={verificationLink} target="_blank" rel="noopener noreferrer" style={{ display: "block" }}>
+                          <img
+                            src={qrCodeUrl}
+                            alt="Verification QR"
+                            className="w-20 h-20 select-none cursor-pointer"
+                            style={{ width: "80px", height: "80px" }}
+                            referrerPolicy="no-referrer"
+                          />
+                        </a>
                       ) : (
                         <div style={{ background: "#eee", width: "80px", height: "80px" }}>[QR]</div>
                       )}
                     </div>
                     <div style={{ fontSize: "10px", marginTop: "6px", fontWeight: "bold" }}>Scan to Verify Result</div>
+                    <div style={{ fontSize: "9px", marginTop: "2px" }}>
+                      <a href="https://mymedilabscom.vercel.app/" target="_blank" rel="noopener noreferrer" style={{ color: "#155a79", textDecoration: "underline", fontWeight: "600" }}>
+                        mymedilabscom.vercel.app
+                      </a>
+                    </div>
                   </div>
 
                 </div>
