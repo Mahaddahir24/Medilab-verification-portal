@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
+// @ts-ignore
+import html2pdf from "html2pdf.js";
 import {
   ShieldCheck,
   Search,
@@ -54,6 +56,7 @@ export default function App() {
 
   // Simulated Verification Authenticity Override (to show unverified states)
   const [verificationOverride, setVerificationOverride] = useState<Record<string, boolean>>({});
+  const [isExporting, setIsExporting] = useState(false);
 
   // Form State for creating a new report
   const [newPatient, setNewPatient] = useState({
@@ -163,6 +166,43 @@ export default function App() {
     setTimeout(() => {
       document.title = originalTitle;
     }, 1000);
+  };
+
+  const handleDownloadPDF = () => {
+    const element = document.getElementById("laboratory-report-sheet");
+    if (!element || !activeReport) return;
+
+    setIsExporting(true);
+
+    const filename = `${activeReport.name.trim().replace(/\s+/g, "_")}_Lab_Report.pdf`;
+
+    const opt = {
+      margin:       10,
+      filename:     filename,
+      image:        { type: "jpeg", quality: 0.98 },
+      html2canvas:  { 
+        scale: 2, 
+        useCORS: true, 
+        logging: false,
+        letterRendering: true,
+        allowTaint: true
+      },
+      jsPDF:        { unit: "mm", format: "a4", orientation: "portrait" }
+    };
+
+    const exporter = (html2pdf as any).default || html2pdf;
+
+    exporter()
+      .set(opt)
+      .from(element)
+      .save()
+      .then(() => {
+        setIsExporting(false);
+      })
+      .catch((error: any) => {
+        console.error("PDF generation failed:", error);
+        setIsExporting(false);
+      });
   };
 
   const resetToFactoryDefault = () => {
@@ -514,11 +554,20 @@ export default function App() {
               <div className="flex flex-col gap-2">
                 <div className="grid grid-cols-2 gap-2">
                   <button
-                    onClick={handlePrint}
-                    className="bg-rose-600 hover:bg-rose-500 text-white font-semibold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-rose-600/10 cursor-pointer"
+                    onClick={handleDownloadPDF}
+                    disabled={isExporting}
+                    className="bg-rose-600 hover:bg-rose-500 text-white font-semibold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-rose-600/10 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Export laboratory report as high-fidelity PDF format"
                   >
-                    <FileDown className="w-3.5 h-3.5" /> Export PDF
+                    {isExporting ? (
+                      <>
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" /> Exporting...
+                      </>
+                    ) : (
+                      <>
+                        <FileDown className="w-3.5 h-3.5" /> Export PDF
+                      </>
+                    )}
                   </button>
                   <button
                     onClick={handlePrint}
@@ -771,23 +820,25 @@ export default function App() {
                     color: #000;
                   }
 
-                  /* Media print query for high contrast, no fading, and A4 precision */
+                  /* Media print query for high contrast, absolute high fidelity, and A4 precision */
                   @media print {
                     @page {
-                      size: A4;
+                      size: A4 portrait;
                       margin: 10mm 12mm !important;
+                    }
+                    * {
+                      -webkit-print-color-adjust: exact !important;
+                      print-color-adjust: exact !important;
                     }
                     body {
                       background: #fff !important;
                       color: #000000 !important;
-                      -webkit-print-color-adjust: exact !important;
-                      print-color-adjust: exact !important;
                     }
                     .medilab-sheet .container-sheet {
-                      width: 186mm !important;
-                      max-width: 186mm !important;
-                      min-height: 275mm !important;
-                      padding: 10px 15px !important;
+                      width: 100% !important;
+                      max-width: 100% !important;
+                      min-height: auto !important;
+                      padding: 35px 35px !important;
                       margin: 0 auto !important;
                       border: none !important;
                       box-shadow: none !important;
@@ -798,10 +849,10 @@ export default function App() {
                       break-inside: avoid !important;
                     }
                     .medilab-sheet .header {
-                      border-bottom: 2px solid #000000 !important;
+                      border-bottom: 2px solid #e2e8f0 !important;
                     }
                     .medilab-sheet .label {
-                      color: #333333 !important;
+                      color: #4b5563 !important;
                       font-weight: 500 !important;
                     }
                     .medilab-sheet .value {
@@ -809,9 +860,9 @@ export default function App() {
                       font-weight: 700 !important;
                     }
                     .medilab-sheet .box {
-                      border: 1.5px solid #111111 !important;
+                      border: 1px solid #e2e8f0 !important;
                       background: #fff !important;
-                      padding: 12px 15px !important;
+                      padding: 16px 20px !important;
                       border-radius: 12px !important;
                     }
                     .medilab-sheet .box h3 {
@@ -824,15 +875,15 @@ export default function App() {
                       font-weight: 700 !important;
                     }
                     .medilab-sheet .results-table {
-                      margin-bottom: 15px !important;
+                      margin-bottom: 25px !important;
                     }
                     .medilab-sheet .results-table th {
                       color: #155a79 !important;
-                      border-bottom: 2px solid #000000 !important;
+                      border-bottom: 1.5px solid #cbd5e1 !important;
                       font-weight: 700 !important;
                     }
                     .medilab-sheet .results-table td {
-                      border-bottom: 1.5px solid #a0aec0 !important;
+                      border-bottom: 1px solid #f1f5f9 !important;
                       color: #000000 !important;
                       font-weight: 500 !important;
                     }
@@ -841,30 +892,30 @@ export default function App() {
                       font-weight: 700 !important;
                     }
                     .medilab-sheet .sig-section {
-                      margin-top: 20px !important;
-                      padding-top: 15px !important;
-                      border-top: 2px dashed #000000 !important;
+                      margin-top: 25px !important;
+                      padding-top: 20px !important;
+                      border-top: 1.5px dashed #cbd5e1 !important;
                     }
                     .medilab-sheet .sig-box {
-                      color: #000000 !important;
+                      color: #374151 !important;
                     }
                     .medilab-sheet .footer {
-                      margin-top: 20px !important;
-                      padding-top: 8px !important;
-                      border-top: 2px solid #000000 !important;
-                      color: #000000 !important;
+                      margin-top: 25px !important;
+                      padding-top: 12px !important;
+                      border-top: 1.5px solid #e2e8f0 !important;
+                      color: #4b5563 !important;
                     }
                     .medilab-sheet .qr-section {
-                      margin-top: 20px !important;
+                      margin-top: 25px !important;
                     }
                     .medilab-sheet .qr-section img {
-                      width: 75px !important;
-                      height: 75px !important;
+                      width: 80px !important;
+                      height: 80px !important;
                     }
                   }
                 `}} />
 
-                <div className="container-sheet relative">
+                <div id="laboratory-report-sheet" className="container-sheet relative bg-white">
                   
                   {/* OVERLAY DIAGONAL STATE IF UNVERIFIED COUBNTERFEIT WARNING */}
                   <AnimatePresence>
