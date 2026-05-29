@@ -770,15 +770,21 @@ export default function App() {
                     {/* First column: Name & Signature */}
                     <div className="sig-box" style={{ flex: "1" }}>
                       <div>
-                        <strong>Medilab Diegnostic</strong><br />
+                        Medilab Diegnostic<br />
                         Name & Signature
                       </div>
                       {isCurrentlyVerified && (
-                        <div style={{ display: "flex", alignItems: "center", marginTop: "20px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "25px", marginTop: "20px" }}>
                           <img 
                             src="https://i.postimg.cc/44vc5LBv/Signature.png" 
                             alt="Signature" 
-                            style={{ height: "75px", width: "auto", mixBlendMode: "multiply", display: "block" }} 
+                            style={{ height: "95px", width: "auto", mixBlendMode: "multiply", display: "block" }} 
+                            referrerPolicy="no-referrer"
+                          />
+                          <img 
+                            src="https://i.postimg.cc/SxkDdY6z/Logo.png" 
+                            alt="Stamp" 
+                            style={{ height: "90px", width: "auto", mixBlendMode: "multiply", display: "block" }} 
                             referrerPolicy="no-referrer"
                           />
                         </div>
@@ -788,7 +794,7 @@ export default function App() {
                     {/* Second column: Doctor Authorization */}
                     <div className="sig-box" style={{ flex: "1", paddingLeft: "55px" }}>
                       <div>
-                        <strong>Authorized By</strong><br />
+                        Authorized By<br />
                         {activeReport?.doctor || "sadam adan Ahmed"}
                       </div>
                     </div>
@@ -796,8 +802,21 @@ export default function App() {
 
                   <div className="footer">
                     <div>Notes: Results are for Medilab Diegnostic.</div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                      <span style={{ border: "1.5px solid #000", padding: "1px 4px", fontSize: "10px", fontWeight: "800", borderRadius: "3px", lineHeight: "1", background: "#fff" }}>DT</span> Powered & Designed by <strong>Mogadisho tech</strong>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                      <span style={{ 
+                        border: "1.2px dashed #000", 
+                        padding: "3px 5px", 
+                        fontSize: "9px", 
+                        fontWeight: "900", 
+                        borderRadius: "5px", 
+                        lineHeight: "1", 
+                        background: "#fff", 
+                        color: "#000",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        letterSpacing: "0.5px"
+                      }}>DT</span> Powered & Designed by <strong>Mogadisho tech</strong>
                     </div>
                   </div>
 
@@ -817,7 +836,7 @@ export default function App() {
                         <div style={{ background: "#eee", width: "80px", height: "80px" }}>[QR]</div>
                       )}
                     </div>
-                    <div style={{ fontSize: "10px", marginTop: "6px", fontWeight: "bold" }}>Scan to Verify Result</div>
+                    <div style={{ fontSize: "10px", marginTop: "6px" }}>Scan to Verify Result</div>
                   </div>
 
                 </div>
