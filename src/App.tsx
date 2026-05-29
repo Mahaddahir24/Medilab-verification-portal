@@ -584,39 +584,194 @@ export default function App() {
               {/* CORE MEDICAL REPORT CONTAINER */}
               <div className="medilab-sheet mx-auto" style={{ maxWidth: "808px" }}>
                 <style dangerouslySetInnerHTML={{__html: `
-                  .medilab-sheet .container-sheet { max-width: 800px; margin: auto; border: 1px solid #ccc; padding: 25px 30px; background: #fff; color: #000; font-family: 'Arial', sans-serif; text-align: left; box-sizing: border-box; }
+                  .medilab-sheet .container-sheet {
+                    max-width: 800px;
+                    margin: auto;
+                    border: 1px solid #d1d5db;
+                    padding: 35px 35px;
+                    background: #fff;
+                    color: #000;
+                    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                    text-align: left;
+                    box-sizing: border-box;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+                  }
                   
-                  /* Header */
-                  .medilab-sheet .header { display: flex; justify-content: space-between; border-bottom: 2px solid #eee; padding-bottom: 12px; margin-bottom: 15px; }
-                  .medilab-sheet .logo-box { display: flex; align-items: center; }
-                  .medilab-sheet .logo { width: 60px; height: 60px; margin-right: 15px; }
-                  .medilab-sheet .lab-name { font-weight: bold; font-size: 20px; color: #3534d8; }
-                  .medilab-sheet .meta-info { text-align: right; font-size: 13px; line-height: 1.5; color: #000; }
+                  /* Header styling matching the screenshot */
+                  .medilab-sheet .header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    border-bottom: 2px solid #e2e8f0;
+                    padding-bottom: 15px;
+                    margin-bottom: 22px;
+                  }
+                  .medilab-sheet .logo-box {
+                    display: flex;
+                    align-items: center;
+                    gap: 15px;
+                  }
+                  .medilab-sheet .logo-container {
+                    border: 1px solid #e2e8f0;
+                    border-radius: 12px;
+                    padding: 6px;
+                    background: #f8fafc;
+                    width: 72px;
+                    height: 72px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-shrink: 0;
+                  }
+                  .medilab-sheet .logo {
+                    max-width: 100%;
+                    max-height: 100%;
+                    object-fit: contain;
+                  }
+                  .medilab-sheet .lab-name {
+                    font-weight: 800;
+                    font-size: 21px;
+                    color: #1a4cd2;
+                    letter-spacing: 0.5px;
+                    text-transform: uppercase;
+                    margin-bottom: 3px;
+                  }
+                  .medilab-sheet .lab-address,
+                  .medilab-sheet .lab-tel {
+                    font-size: 11.5px;
+                    color: #1e293b;
+                    font-weight: 500;
+                    line-height: 1.4;
+                  }
+                  
+                  /* Right side Meta Info styling */
+                  .medilab-sheet .meta-info {
+                    text-align: right;
+                    font-size: 12.5px;
+                    line-height: 1.6;
+                    color: #1e293b;
+                  }
+                  .medilab-sheet .meta-label {
+                    font-weight: 700;
+                    color: #0f172a;
+                  }
+                  .medilab-sheet .meta-value {
+                    font-weight: 400;
+                    color: #1e293b;
+                  }
 
-                  /* Information Sections */
-                  .medilab-sheet .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-                  .medilab-sheet .box { border: 1px solid #aaa; padding: 12px 15px; border-radius: 5px; background: #fff; }
-                  .medilab-sheet .box h3 { font-size: 14px; color: #155a79; margin: 0 0 8px 0; border-bottom: 1px solid #eee; padding-bottom: 5px; font-weight: bold; }
-                  .medilab-sheet .row { display: flex; font-size: 13px; margin-bottom: 4px; line-height: 1.5; }
-                  .medilab-sheet .label { width: 110px; color: #555; flex-shrink: 0; }
-                  .medilab-sheet .value { font-weight: bold; color: #000; }
+                  /* Information Boxes side by side */
+                  .medilab-sheet .info-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 16px;
+                    margin-bottom: 25px;
+                  }
+                  .medilab-sheet .box {
+                    border: 1px solid #e2e8f0;
+                    padding: 16px 20px;
+                    border-radius: 12px;
+                    background: #fff;
+                  }
+                  .medilab-sheet .box h3 {
+                    font-size: 12.5px;
+                    color: #155a79;
+                    margin: 0 0 12px 0;
+                    font-weight: 700;
+                    letter-spacing: 0.5px;
+                    text-transform: uppercase;
+                  }
+                  .medilab-sheet .row {
+                    display: flex;
+                    font-size: 12.5px;
+                    margin-bottom: 6px;
+                    line-height: 1.4;
+                  }
+                  .medilab-sheet .row:last-child {
+                    margin-bottom: 0;
+                  }
+                  .medilab-sheet .label {
+                    width: 130px;
+                    color: #4b5563;
+                    font-weight: 500;
+                    flex-shrink: 0;
+                  }
+                  .medilab-sheet .value {
+                    font-weight: 700;
+                    color: #000000;
+                  }
 
-                  /* Table */
-                  .medilab-sheet .results-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-                  .medilab-sheet .results-table th { text-align: left; border-bottom: 1px solid #aaa; padding: 6px 8px; font-size: 14px; color: #155a79; font-weight: bold; }
-                  .medilab-sheet .results-table td { padding: 6px 8px; font-size: 13px; border-bottom: 1px solid #eee; color: #000; }
-                  .medilab-sheet .category { background: #f9f9f9; font-weight: bold; color: #155a79; }
-                  .medilab-sheet .category td { color: #155a79; }
+                  /* Test Results Title and Table */
+                  .medilab-sheet .section-title {
+                    font-size: 13px;
+                    color: #155a79;
+                    font-weight: 700;
+                    letter-spacing: 0.5px;
+                    margin: 0 0 10px 0;
+                    text-align: left;
+                    text-transform: uppercase;
+                  }
+                  .medilab-sheet .results-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 25px;
+                  }
+                  .medilab-sheet .results-table th {
+                    text-align: left;
+                    border-bottom: 1.5px solid #cbd5e1;
+                    padding: 8px;
+                    font-size: 12.5px;
+                    color: #155a79;
+                    font-weight: 600;
+                  }
+                  .medilab-sheet .results-table td {
+                    padding: 9px 8px;
+                    font-size: 12.5px;
+                    border-bottom: 1px solid #f1f5f9;
+                    color: #000000;
+                  }
+                  .medilab-sheet .results-table tr.category td {
+                    font-weight: 700;
+                    color: #155a79 !important;
+                    font-size: 13px;
+                    padding: 14px 8px 6px 8px;
+                    border-bottom: none !important;
+                  }
 
-                  /* Signatures */
-                  .medilab-sheet .sig-section { display: flex; justify-content: space-between; margin-top: 15px; padding: 12px 0 0 0; border-top: 1.5px dashed #bbb; position: relative; }
-                  .medilab-sheet .sig-box { font-size: 13px; line-height: 1.8; color: #000; text-align: left; }
+                  /* Signatures matching referenced layout (Stamp & Signature side by side on left) */
+                  .medilab-sheet .sig-section {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 25px;
+                    padding-top: 20px;
+                    border-top: 1.5px dashed #cbd5e1;
+                  }
+                  .medilab-sheet .sig-box {
+                    font-size: 12.5px;
+                    line-height: 1.6;
+                    color: #374151;
+                    text-align: left;
+                  }
 
-                  /* Footer */
-                  .medilab-sheet .footer { margin-top: 15px; border-top: 1px solid #eee; padding-top: 8px; font-size: 11px; display: flex; justify-content: space-between; color: #555; }
-                  .medilab-sheet .qr-section { text-align: center; margin-top: 15px; color: #000; }
+                  /* Footer & QR */
+                  .medilab-sheet .footer {
+                    margin-top: 25px;
+                    border-top: 1.5px solid #e2e8f0;
+                    padding-top: 12px;
+                    font-size: 11px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    color: #4b5563;
+                  }
+                  .medilab-sheet .qr-section {
+                    text-align: center;
+                    margin-top: 25px;
+                    color: #000;
+                  }
 
-                  /* Printing custom sheet rule overrides */
+                  /* Media print query for high contrast, no fading, and A4 precision */
                   @media print {
                     @page {
                       size: A4;
@@ -624,7 +779,7 @@ export default function App() {
                     }
                     body {
                       background: #fff !important;
-                      color: #000 !important;
+                      color: #000000 !important;
                       -webkit-print-color-adjust: exact !important;
                       print-color-adjust: exact !important;
                     }
@@ -637,87 +792,74 @@ export default function App() {
                       border: none !important;
                       box-shadow: none !important;
                       background: #fff !important;
-                      color: #000 !important;
+                      color: #000000 !important;
                       box-sizing: border-box !important;
                       page-break-inside: avoid !important;
                       break-inside: avoid !important;
                     }
-                    /* Ensure all text and elements have rich, dark contrast (not faint or too light) */
+                    .medilab-sheet .header {
+                      border-bottom: 2px solid #000000 !important;
+                    }
                     .medilab-sheet .label {
-                      color: #111 !important;
-                      font-weight: 600 !important;
+                      color: #333333 !important;
+                      font-weight: 500 !important;
                     }
                     .medilab-sheet .value {
-                      color: #000 !important;
+                      color: #000000 !important;
+                      font-weight: 700 !important;
                     }
                     .medilab-sheet .box {
-                      border: 1.5px solid #333 !important;
+                      border: 1.5px solid #111111 !important;
                       background: #fff !important;
-                      padding: 6px 10px !important;
+                      padding: 12px 15px !important;
+                      border-radius: 12px !important;
                     }
                     .medilab-sheet .box h3 {
-                      color: #0f3b50 !important;
-                      border-bottom: 1.5px solid #333 !important;
+                      color: #155a79 !important;
+                      font-weight: 700 !important;
+                      border-bottom: none !important;
+                    }
+                    .medilab-sheet .section-title {
+                      color: #155a79 !important;
+                      font-weight: 700 !important;
                     }
                     .medilab-sheet .results-table {
-                      margin-bottom: 10px !important;
+                      margin-bottom: 15px !important;
                     }
                     .medilab-sheet .results-table th {
-                      color: #0f3b50 !important;
-                      border-bottom: 2px solid #000 !important;
+                      color: #155a79 !important;
+                      border-bottom: 2px solid #000000 !important;
+                      font-weight: 700 !important;
                     }
                     .medilab-sheet .results-table td {
-                      border-bottom: 1px solid #999 !important;
-                      color: #000 !important;
-                      padding: 3px 5px !important;
-                      font-size: 11px !important;
+                      border-bottom: 1.5px solid #a0aec0 !important;
+                      color: #000000 !important;
+                      font-weight: 500 !important;
                     }
-                    .medilab-sheet .results-table td * {
-                      color: #000 !important;
-                    }
-                    .medilab-sheet .category {
-                      background: #e2e8f0 !important;
-                      border-bottom: 2px solid #000 !important;
-                    }
-                    .medilab-sheet .category td {
-                      color: #000 !important;
-                      font-weight: bold !important;
-                    }
-                    .medilab-sheet .header {
-                      padding-bottom: 6px !important;
-                      margin-bottom: 8px !important;
-                      border-bottom: 2px solid #333 !important;
-                    }
-                    .medilab-sheet .info-grid {
-                      gap: 10px !important;
-                      margin-bottom: 10px !important;
+                    .medilab-sheet .results-table tr.category td {
+                      color: #155a79 !important;
+                      font-weight: 700 !important;
                     }
                     .medilab-sheet .sig-section {
-                      margin-top: 12px !important;
-                      padding-top: 10px !important;
-                      display: flex !important;
-                      justify-content: space-between !important;
-                      border-top: 2px dashed #333 !important;
+                      margin-top: 20px !important;
+                      padding-top: 15px !important;
+                      border-top: 2px dashed #000000 !important;
                     }
                     .medilab-sheet .sig-box {
-                      color: #000 !important;
-                    }
-                    .medilab-sheet .sig-box img {
-                      height: 95px !important;
-                      margin-top: 8px !important;
+                      color: #000000 !important;
                     }
                     .medilab-sheet .footer {
-                      margin-top: 12px !important;
-                      padding-top: 6px !important;
-                      border-top: 1.5px solid #333 !important;
-                      color: #000 !important;
+                      margin-top: 20px !important;
+                      padding-top: 8px !important;
+                      border-top: 2px solid #000000 !important;
+                      color: #000000 !important;
                     }
                     .medilab-sheet .qr-section {
-                      margin-top: 12px !important;
+                      margin-top: 20px !important;
                     }
                     .medilab-sheet .qr-section img {
-                      width: 55px !important;
-                      height: 55px !important;
+                      width: 75px !important;
+                      height: 75px !important;
                     }
                   }
                 `}} />
@@ -743,26 +885,28 @@ export default function App() {
 
                   <div className="header">
                     <div className="logo-box">
-                      <img 
-                        src="https://i.postimg.cc/SxkDdY6z/Logo.png" 
-                        alt="MEDILAB DIAGNOSTIC Logo" 
-                        className="logo"
-                        referrerPolicy="no-referrer"
-                      />
+                      <div className="logo-container">
+                        <img 
+                          src="https://i.postimg.cc/SxkDdY6z/Logo.png" 
+                          alt="MEDILAB DIEGNOSTIC Logo" 
+                          className="logo"
+                          referrerPolicy="no-referrer"
+                        />
+                      </div>
                       <div>
-                        <div className="lab-name">MEDILAB DIAGNOSTIC</div>
-                        <div style={{ fontSize: "12px", color: "#333" }}>Address: Aden Adde Airport, Mogadishu-Somalia</div>
-                        <div style={{ fontSize: "12px", color: "#333" }}>Tel: +252 613523011 • Email: m.labsdiagnostic@gmail.com</div>
+                        <div className="lab-name">MEDILAB DIEGNOSTIC</div>
+                        <div className="lab-address">Address: AdenAdde InternationalAirport,NextTo Dahabshiil Bank, Waberi, Mogadishu-Somalia</div>
+                        <div className="lab-tel">Tel: +252 613523011 • Email: m.labsdiagnostic@gmail.com</div>
                       </div>
                     </div>
                     <div className="meta-info">
-                      <strong>Boono #:</strong> {activeReport?.id || "2026"}<br />
-                      <strong>Printed:</strong> {activeReport?.resultDate || "24 May 2026"}<br />
-                      <strong>Printed By:</strong> {activeReport?.doctor || "sadam adan Ahmed"}
+                      <div><span className="meta-label">Boono #:</span> <span className="meta-value">{activeReport?.id || "2026"}</span></div>
+                      <div><span className="meta-label">Printed:</span> <span className="meta-value">{activeReport?.resultDate || "24 May 2026"}</span></div>
+                      <div><span className="meta-label">Printed By:</span> <span className="meta-value">{activeReport?.doctor || "sadam adan Ahmed"}</span></div>
                     </div>
                   </div>
 
-                  {/* 2. DYNAMIC INTEGRITY ALERT WARNING */}
+                  {/* DYNAMIC INTEGRITY ALERT WARNING */}
                   {!isCurrentlyVerified && (
                     <div style={{ marginBottom: "15px", padding: "10px", background: "#fdf2f2", borderLeft: "4px solid #f05252", borderRadius: "4px", color: "#9b1c1c", fontSize: "12px", textAlign: "left" }}>
                       <strong style={{ display: "block", textTransform: "uppercase", marginBottom: "2px" }}>⚠️ INVALID DOCUMENT / SYSTEM COUBNTERFEIT WARNING</strong>
@@ -779,7 +923,7 @@ export default function App() {
                       </div>
                       <div className="row">
                         <div className="label">Patient ID</div>
-                        <div className="value font-mono">{activeReport?.id || "1876"}</div>
+                        <div className="value">{activeReport?.id || "1876"}</div>
                       </div>
                       <div className="row">
                         <div className="label">Age / Gender</div>
@@ -787,17 +931,17 @@ export default function App() {
                       </div>
                       <div className="row">
                         <div className="label">Phone</div>
-                        <div className="value font-mono">{activeReport?.phone || "839180"}</div>
+                        <div className="value">{activeReport?.phone || "839180"}</div>
                       </div>
                       <div className="row">
                         <div className="label">Passport NO</div>
-                        <div className="value font-mono">{activeReport?.passportNo || "FS879183"}</div>
+                        <div className="value">{activeReport?.passportNo || "FS879183"}</div>
                       </div>
                     </div>
                     <div className="box">
                       <h3>LAB ORDER DETAILS</h3>
                       <div className="row">
-                        <div className="label">Company</div>
+                        <div className="label">Compony</div>
                         <div className="value">{activeReport?.company || "UKRANIAN HELICOPTERS"}</div>
                       </div>
                       <div className="row">
@@ -810,7 +954,7 @@ export default function App() {
                       </div>
                       <div className="row">
                         <div className="label">result time</div>
-                        <div className="value font-mono">{activeReport?.resultDate || "2026-05-24"}</div>
+                        <div className="value">{activeReport?.resultDate || "2026-05-24"}</div>
                       </div>
                       <div className="row">
                         <div className="label">Status</div>
@@ -819,7 +963,7 @@ export default function App() {
                     </div>
                   </div>
 
-                  <h3 style={{ color: "#155a79", fontSize: "15px", fontWeight: "bold", margin: "0 0 12px 0", textAlign: "left", textTransform: "uppercase" }}>TEST RESULTS</h3>
+                  <div className="section-title">TEST RESULTS</div>
                   <table className="results-table">
                     <thead>
                       <tr>
@@ -839,12 +983,12 @@ export default function App() {
                         return (
                           <tr key={idx}>
                             <td style={{ fontWeight: "600" }}>{test.name}</td>
-                            <td>
+                            <td style={{ fontWeight: "700" }}>
                               {isCurrentlyVerified ? test.result : "REJECTED"}
                             </td>
-                            <td style={{ fontFamily: "monospace", color: "#222" }}>{test.unit}</td>
+                            <td>{test.unit}</td>
                             <td>Negative</td>
-                            <td style={{ fontStyle: "italic", color: "#222" }}>
+                            <td>
                               {isCurrentlyVerified ? (
                                 test.remark || ""
                               ) : (
@@ -865,7 +1009,7 @@ export default function App() {
                         Name & Signature
                       </div>
                       {isCurrentlyVerified && (
-                        <div style={{ display: "flex", alignItems: "center", marginTop: "20px" }}>
+                        <div style={{ display: "flex", alignItems: "center", marginTop: "15px" }}>
                           <img 
                             src="https://i.postimg.cc/44vc5LBv/Signature.png" 
                             alt="Signature" 
@@ -876,8 +1020,8 @@ export default function App() {
                       )}
                     </div>
 
-                    {/* Second column: Doctor Authorization */}
-                    <div className="sig-box" style={{ flex: "1", paddingLeft: "55px" }}>
+                    {/* Second column: Doctor Authorization with Stamp */}
+                    <div className="sig-box" style={{ flex: "1", paddingLeft: "80px" }}>
                       <div>
                         Authorized By<br />
                         {activeReport?.doctor || "sadam adan Ahmed"}
