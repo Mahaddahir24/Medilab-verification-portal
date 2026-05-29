@@ -50,7 +50,7 @@ export default function App() {
   const [selectedReportId, setSelectedReportId] = useState("1876");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [stampUrl, setStampUrl] = useState("");
-  const [qrTargetEnv, setQrTargetEnv] = useState<"production" | "sandbox">("production");
+  const [customBaseUrl, setCustomBaseUrl] = useState("https://mymedilabscom.vercel.app");
 
   // Simulated Verification Authenticity Override (to show unverified states)
   const [verificationOverride, setVerificationOverride] = useState<Record<string, boolean>>({});
@@ -206,15 +206,9 @@ export default function App() {
     });
   };
 
-  // Generate dynamic QR code URL based on target environment
-  const targetBaseUrl = qrTargetEnv === "production"
-    ? "https://mymedilabscom.vercel.app"
-    : window.location.origin;
-
+  // Generate dynamic QR code URL based on production host URL in Serverless HTML mode
   const verificationLink = activeReport
-    ? qrTargetEnv === "production"
-      ? `https://mymedilabscom.vercel.app/Lab_Track/php/verify.php?token=${activeReport.token || "a3b8899c3a"}`
-      : `${window.location.origin}/verify.html?id=${activeReport.id}&name=${encodeURIComponent(activeReport.name)}&age=${activeReport.age}&gender=${activeReport.gender}&company=${encodeURIComponent(activeReport.company)}&passport=${encodeURIComponent(activeReport.passportNo)}&phone=${activeReport.phone || ""}&doctor=${encodeURIComponent(activeReport.doctor || "sadam adan Ahmed")}&date=${activeReport.resultDate}&hcv=${encodeURIComponent(activeReport.hcv)}&hepb=${encodeURIComponent(activeReport.hepB)}&hiv=${encodeURIComponent(activeReport.hiv)}&tpha=${encodeURIComponent(activeReport.tpha)}`
+    ? `${customBaseUrl}/verify.html?id=${activeReport.id}&name=${encodeURIComponent(activeReport.name)}&age=${activeReport.age}&gender=${activeReport.gender}&company=${encodeURIComponent(activeReport.company)}&passport=${encodeURIComponent(activeReport.passportNo)}&phone=${activeReport.phone || ""}&doctor=${encodeURIComponent(activeReport.doctor || "sadam adan Ahmed")}&date=${activeReport.resultDate}&hcv=${encodeURIComponent(activeReport.hcv)}&hepb=${encodeURIComponent(activeReport.hepB)}&hiv=${encodeURIComponent(activeReport.hiv)}&tpha=${encodeURIComponent(activeReport.tpha)}`
     : "";
 
   const qrCodeUrl = verificationLink
@@ -359,39 +353,31 @@ export default function App() {
               <h2 className="text-sm font-semibold text-slate-300 tracking-wide uppercase flex items-center gap-1.5 font-display">
                 <QrCode className="w-4.5 h-4.5 text-blue-400" /> QR Verification Engine
               </h2>
-            </div>
-            
-            {/* Target Address Toggle */}
-            <div className="flex border border-slate-800 rounded-xl bg-slate-950/60 p-1">
-              <button
-                type="button"
-                onClick={() => setQrTargetEnv("production")}
-                className={`flex-1 text-center py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                  qrTargetEnv === "production"
-                    ? "bg-blue-600 text-white font-bold"
-                    : "text-slate-400 hover:text-white"
-                }`}
-              >
-                Vercel Link
-              </button>
-              <button
-                type="button"
-                onClick={() => setQrTargetEnv("sandbox")}
-                className={`flex-1 text-center py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                  qrTargetEnv === "sandbox"
-                    ? "bg-slate-800 text-white font-bold"
-                    : "text-slate-400 hover:text-white"
-                }`}
-              >
-                Sandbox Preview
-              </button>
+              <span className="text-[9px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/30 uppercase tracking-widest font-mono font-bold">
+                Serverless HTML
+              </span>
             </div>
 
             <p className="text-[11px] text-slate-400 leading-normal">
-              {qrTargetEnv === "production" 
-                ? "Generates an official barcode redirecting smartphones to the Vercel production portal." 
-                : "Generates a sandbox barcode for immediate testing on the local workspace inside the AI Studio preview."}
+              Generates high-resolution official QR codes routing straight to your serverless verification system. It bypasses PHP processing for maximum reliability on Vercel.
             </p>
+
+            {/* Custom Settings inputs for custom domain */}
+            <div className="flex flex-col gap-2 mt-1 bg-slate-900/40 p-2.5 rounded-xl border border-slate-800/80">
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[9px] font-mono text-slate-500 uppercase">Production Host URL:</span>
+                  <span className="text-[9px] text-emerald-400 font-mono font-bold">verify.html is automatic</span>
+                </div>
+                <input
+                  type="text"
+                  value={customBaseUrl}
+                  onChange={(e) => setCustomBaseUrl(e.target.value)}
+                  className="bg-slate-950 border border-slate-800 text-slate-200 text-[11px] font-mono px-2 py-1 rounded-lg focus:outline-none focus:border-blue-500 w-full"
+                  placeholder="URL of your production portal"
+                />
+              </div>
+            </div>
 
             <a
               href={verificationLink}
