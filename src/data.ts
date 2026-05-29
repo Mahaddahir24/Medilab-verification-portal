@@ -3,6 +3,7 @@ import { PatientReport } from "./types";
 export const INITIAL_REPORTS: PatientReport[] = [
   {
     id: "1876",
+    boono: "2026",
     name: "MYKOLA VORONA",
     age: 44,
     gender: "Male",
@@ -22,6 +23,7 @@ export const INITIAL_REPORTS: PatientReport[] = [
   },
   {
     id: "1932",
+    boono: "2027",
     name: "SERGEY KOVALOV",
     age: 38,
     gender: "Male",
@@ -41,6 +43,7 @@ export const INITIAL_REPORTS: PatientReport[] = [
   },
   {
     id: "2041",
+    boono: "2028",
     name: "HALIMA ABDI NOOR",
     age: 29,
     gender: "Female",
@@ -60,6 +63,7 @@ export const INITIAL_REPORTS: PatientReport[] = [
   },
   {
     id: "2150",
+    boono: "2029",
     name: "MAHAD DAHIR OMAR",
     age: 31,
     gender: "Male",

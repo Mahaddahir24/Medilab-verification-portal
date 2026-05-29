@@ -61,13 +61,14 @@ export default function App() {
   // Form State for creating a new report
   const [newPatient, setNewPatient] = useState({
     id: "",
+    boono: "",
     name: "",
     age: 35,
     gender: "Male" as "Male" | "Female" | "Other",
     company: "",
     passportNo: "",
     phone: "",
-    doctor: "Dr. Sadam Adan Ahmed",
+    doctor: "sadam adan Ahmed",
     resultDate: new Date().toISOString().split("T")[0],
     hcv: "Negative",
     hepB: "Negative",
@@ -176,24 +177,35 @@ export default function App() {
 
     const filename = `${activeReport.name.trim().replace(/\s+/g, "_")}_Lab_Report.pdf`;
 
-    // Save current styling to restore later
-    const originalWidth = element.style.width;
-    const originalMaxWidth = element.style.maxWidth;
-    const originalMinHeight = element.style.minHeight;
-    const originalBoxShadow = element.style.boxShadow;
-    const originalBorderRadius = element.style.borderRadius;
-    const originalBorder = element.style.border;
+    // 1. Create a unique clone of our report sheet
+    const clone = element.cloneNode(true) as HTMLElement;
 
-    // Enforce ideal A4 dimensions and clean layout for the high-fidelity capture
-    element.style.width = "800px";
-    element.style.maxWidth = "800px";
-    element.style.minHeight = "1120px";
-    element.style.boxShadow = "none";
-    element.style.borderRadius = "0";
-    element.style.border = "none";
+    // 2. Wrap the clone inside a temporary absolute off-screen container.
+    // This detaches the layout scaling from any narrow screen viewports or sidebar constraints.
+    const container = document.createElement("div");
+    container.style.position = "absolute";
+    container.style.left = "-9999px";
+    container.style.top = "0";
+    container.style.width = "800px";
+    container.style.background = "#ffffff";
+    container.style.color = "#000000";
+
+    container.appendChild(clone);
+    document.body.appendChild(container);
+
+    // 3. Force clean inline styles on the clone suited for pristine single A4 page capture
+    clone.style.width = "800px";
+    clone.style.maxWidth = "800px";
+    clone.style.minHeight = "auto"; // size naturally with the report contents
+    clone.style.boxShadow = "none";
+    clone.style.borderRadius = "0";
+    clone.style.border = "none";
+    clone.style.padding = "35px";
+    clone.style.margin = "0";
+    clone.style.background = "#ffffff";
 
     const opt = {
-      margin:       8, // elegant 8mm paper-safe margins
+      margin:       0, // Zero margin fits built-in 35px padding edge-to-edge beautifully
       filename:     filename,
       image:        { type: "jpeg", quality: 0.98 },
       html2canvas:  { 
@@ -201,7 +213,10 @@ export default function App() {
         useCORS: true, 
         logging: false,
         letterRendering: true,
-        allowTaint: true
+        allowTaint: true,
+        windowWidth: 800, // Forces html2canvas to render the clone in simulated 800px width
+        scrollX: 0,
+        scrollY: 0
       },
       jsPDF:        { unit: "mm", format: "a4", orientation: "portrait" }
     };
@@ -210,27 +225,20 @@ export default function App() {
 
     exporter()
       .set(opt)
-      .from(element)
+      .from(clone)
       .save()
       .then(() => {
-        // Restore styles securely
-        element.style.width = originalWidth;
-        element.style.maxWidth = originalMaxWidth;
-        element.style.minHeight = originalMinHeight;
-        element.style.boxShadow = originalBoxShadow;
-        element.style.borderRadius = originalBorderRadius;
-        element.style.border = originalBorder;
+        // Clean up elements from DOM comfortably
+        if (document.body.contains(container)) {
+          document.body.removeChild(container);
+        }
         setIsExporting(false);
       })
       .catch((error: any) => {
         console.error("PDF generation failed:", error);
-        // Restore styles securely in case of failures
-        element.style.width = originalWidth;
-        element.style.maxWidth = originalMaxWidth;
-        element.style.minHeight = originalMinHeight;
-        element.style.boxShadow = originalBoxShadow;
-        element.style.borderRadius = originalBorderRadius;
-        element.style.border = originalBorder;
+        if (document.body.contains(container)) {
+          document.body.removeChild(container);
+        }
         setIsExporting(false);
       });
   };
@@ -260,6 +268,7 @@ export default function App() {
 
     const created: PatientReport = {
       id: newPatient.id,
+      boono: newPatient.boono.trim() || newPatient.id,
       name: newPatient.name.toUpperCase(),
       age: Number(newPatient.age),
       gender: newPatient.gender,
@@ -286,13 +295,14 @@ export default function App() {
     // Reset Form fields
     setNewPatient({
       id: "",
+      boono: "",
       name: "",
       age: 35,
       gender: "Male",
       company: "",
       passportNo: "",
       phone: "",
-      doctor: "Dr. Sadam Adan Ahmed",
+      doctor: "sadam adan Ahmed",
       resultDate: new Date().toISOString().split("T")[0],
       hcv: "Negative",
       hepB: "Negative",
@@ -692,10 +702,6 @@ export default function App() {
                     gap: 15px;
                   }
                   .container-sheet .logo-container {
-                    border: 1px solid #e2e8f0;
-                    border-radius: 12px;
-                    padding: 6px;
-                    background: #f8fafc;
                     width: 72px;
                     height: 72px;
                     display: flex;
@@ -731,9 +737,21 @@ export default function App() {
                     line-height: 1.6;
                     color: #1e293b;
                   }
+                  .container-sheet .meta-row {
+                    margin-bottom: 4px;
+                    white-space: nowrap;
+                    display: block;
+                  }
+                  .container-sheet .meta-label,
+                  .container-sheet .meta-value {
+                    display: inline-block;
+                    vertical-align: middle;
+                    line-height: 1.2;
+                  }
                   .container-sheet .meta-label {
                     font-weight: 700;
                     color: #0f172a;
+                    margin-right: 4px;
                   }
                   .container-sheet .meta-value {
                     font-weight: 400;
@@ -757,7 +775,7 @@ export default function App() {
                     font-size: 12.5px;
                     color: #155a79;
                     margin: 0 0 12px 0;
-                    font-weight: 700;
+                    font-weight: 400 !important;
                     letter-spacing: 0.5px;
                     text-transform: uppercase;
                   }
@@ -802,7 +820,7 @@ export default function App() {
                     padding: 8px;
                     font-size: 12.5px;
                     color: #155a79;
-                    font-weight: 600;
+                    font-weight: 400 !important;
                   }
                   .container-sheet .results-table td {
                     padding: 9px 8px;
@@ -811,7 +829,7 @@ export default function App() {
                     color: #000000;
                   }
                   .container-sheet .results-table tr.category td {
-                    font-weight: 700;
+                    font-weight: 400 !important;
                     color: #155a79 !important;
                     font-size: 13px;
                     padding: 14px 8px 6px 8px;
@@ -843,6 +861,37 @@ export default function App() {
                     justify-content: space-between;
                     align-items: center;
                     color: #4b5563;
+                  }
+                  .container-sheet .footer-credit {
+                    display: inline-block;
+                    vertical-align: middle;
+                    white-space: nowrap;
+                  }
+                  .container-sheet .footer-credit-logo {
+                    border: 1px dashed #cbd5e1;
+                    width: 18px;
+                    height: 18px;
+                    font-size: 8px;
+                    font-weight: 700;
+                    border-radius: 3px;
+                    background: #fff;
+                    color: #4b5563;
+                    display: inline-block;
+                    vertical-align: middle;
+                    text-align: center;
+                    line-height: 16px;
+                    box-sizing: border-box;
+                    margin-right: 6px;
+                    padding: 0;
+                    position: relative;
+                    top: 1.5px;
+                  }
+                  .container-sheet .footer-credit-text {
+                    font-size: 11px;
+                    color: #4b5563;
+                    display: inline-block;
+                    vertical-align: middle;
+                    line-height: 18px;
                   }
                   .container-sheet .qr-section {
                     text-align: center;
@@ -897,7 +946,7 @@ export default function App() {
                     }
                     .container-sheet .box h3 {
                       color: #155a79 !important;
-                      font-weight: 700 !important;
+                      font-weight: 400 !important;
                       border-bottom: none !important;
                     }
                     .container-sheet .section-title {
@@ -910,16 +959,16 @@ export default function App() {
                     .container-sheet .results-table th {
                       color: #155a79 !important;
                       border-bottom: 1.5px solid #cbd5e1 !important;
-                      font-weight: 700 !important;
+                      font-weight: 400 !important;
                     }
                     .container-sheet .results-table td {
                       border-bottom: 1px solid #f1f5f9 !important;
                       color: #000000 !important;
-                      font-weight: 500 !important;
+                      font-weight: 400 !important;
                     }
                     .container-sheet .results-table tr.category td {
                       color: #155a79 !important;
-                      font-weight: 700 !important;
+                      font-weight: 400 !important;
                     }
                     .container-sheet .sig-section {
                       margin-top: 25px !important;
@@ -934,6 +983,40 @@ export default function App() {
                       padding-top: 12px !important;
                       border-top: 1.5px solid #e2e8f0 !important;
                       color: #4b5563 !important;
+                      display: flex !important;
+                      justify-content: space-between !important;
+                      align-items: center !important;
+                    }
+                    .container-sheet .footer-credit {
+                      display: inline-block !important;
+                      vertical-align: middle !important;
+                      white-space: nowrap !important;
+                    }
+                    .container-sheet .footer-credit-logo {
+                      border: 1px dashed #cbd5e1 !important;
+                      width: 18px !important;
+                      height: 18px !important;
+                      font-size: 8px !important;
+                      font-weight: 700 !important;
+                      border-radius: 3px !important;
+                      background: #fff !important;
+                      color: #4b5563 !important;
+                      display: inline-block !important;
+                      vertical-align: middle !important;
+                      text-align: center !important;
+                      line-height: 16px !important;
+                      box-sizing: border-box !important;
+                      margin-right: 6px !important;
+                      padding: 0 !important;
+                      position: relative !important;
+                      top: 1.5px !important;
+                    }
+                    .container-sheet .footer-credit-text {
+                      font-size: 11px !important;
+                      color: #4b5563 !important;
+                      display: inline-block !important;
+                      vertical-align: middle !important;
+                      line-height: 18px !important;
                     }
                     .container-sheet .qr-section {
                       margin-top: 25px !important;
@@ -941,6 +1024,26 @@ export default function App() {
                     .container-sheet .qr-section img {
                       width: 80px !important;
                       height: 80px !important;
+                    }
+                    .container-sheet .meta-row {
+                      margin-bottom: 4px !important;
+                      white-space: nowrap !important;
+                      display: block !important;
+                    }
+                    .container-sheet .meta-label,
+                    .container-sheet .meta-value {
+                      display: inline-block !important;
+                      vertical-align: middle !important;
+                      line-height: 1.2 !important;
+                    }
+                    .container-sheet .meta-label {
+                      font-weight: 700 !important;
+                      color: #0f172a !important;
+                      margin-right: 4px !important;
+                    }
+                    .container-sheet .meta-value {
+                      font-weight: 400 !important;
+                      color: #1e293b !important;
                     }
                   }
                 `}} />
@@ -968,7 +1071,7 @@ export default function App() {
                     <div className="logo-box">
                       <div className="logo-container">
                         <img 
-                          src="https://i.postimg.cc/SxkDdY6z/Logo.png" 
+                          src="https://i.postimg.cc/v8Vsxr1Q/Logo.png" 
                           alt="MEDILAB DIEGNOSTIC Logo" 
                           className="logo"
                           referrerPolicy="no-referrer"
@@ -981,9 +1084,9 @@ export default function App() {
                       </div>
                     </div>
                     <div className="meta-info">
-                      <div><span className="meta-label">Boono #:</span> <span className="meta-value">{activeReport?.id || "2026"}</span></div>
-                      <div><span className="meta-label">Printed:</span> <span className="meta-value">{activeReport?.resultDate || "24 May 2026"}</span></div>
-                      <div><span className="meta-label">Printed By:</span> <span className="meta-value">{activeReport?.doctor || "sadam adan Ahmed"}</span></div>
+                      <div className="meta-row"><span className="meta-label">Boono #:</span> <span className="meta-value">{activeReport?.boono || activeReport?.id || "2026"}</span></div>
+                      <div className="meta-row"><span className="meta-label">Printed:</span> <span className="meta-value">{activeReport?.resultDate || "24 May 2026"}</span></div>
+                      <div className="meta-row"><span className="meta-label">Printed By:</span> <span className="meta-value">{activeReport?.doctor || "sadam adan Ahmed"}</span></div>
                     </div>
                   </div>
 
@@ -997,7 +1100,7 @@ export default function App() {
 
                   <div className="info-grid">
                     <div className="box">
-                      <h3>PATIENT INFORMATION</h3>
+                      <h3 style={{ fontWeight: "400" }}>PATIENT INFORMATION</h3>
                       <div className="row">
                         <div className="label">Patient Name</div>
                         <div className="value">{activeReport?.name || "MYKOLA VORONA"}</div>
@@ -1020,7 +1123,7 @@ export default function App() {
                       </div>
                     </div>
                     <div className="box">
-                      <h3>LAB ORDER DETAILS</h3>
+                      <h3 style={{ fontWeight: "400" }}>LAB ORDER DETAILS</h3>
                       <div className="row">
                         <div className="label">Compony</div>
                         <div className="value">{activeReport?.company || "UKRANIAN HELICOPTERS"}</div>
@@ -1048,27 +1151,27 @@ export default function App() {
                   <table className="results-table">
                     <thead>
                       <tr>
-                        <th>Test Name</th>
-                        <th>Result</th>
-                        <th>Unit</th>
-                        <th>Reference Range</th>
-                        <th>Remarks</th>
+                        <th style={{ fontWeight: "400" }}>Test Name</th>
+                        <th style={{ fontWeight: "400" }}>Result</th>
+                        <th style={{ fontWeight: "400" }}>Unit</th>
+                        <th style={{ fontWeight: "400" }}>Reference Range</th>
+                        <th style={{ fontWeight: "400" }}>Remarks</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr className="category">
-                        <td colSpan={5}>Immunology</td>
+                        <td colSpan={5} style={{ fontWeight: "400" }}>Immunology</td>
                       </tr>
                       {activeReport?.tests.map((test, idx) => {
                         const isNegative = test.result === "Negative" || test.result === "Non-Reactive";
                         return (
                           <tr key={idx}>
                             <td style={{ fontWeight: "600" }}>{test.name}</td>
-                            <td style={{ fontWeight: "700" }}>
+                            <td style={{ fontWeight: "400" }}>
                               {isCurrentlyVerified ? test.result : "REJECTED"}
                             </td>
                             <td>{test.unit}</td>
-                            <td>Negative</td>
+                            <td style={{ fontWeight: "400" }}>Negative</td>
                             <td>
                               {isCurrentlyVerified ? (
                                 test.remark || ""
@@ -1112,21 +1215,11 @@ export default function App() {
 
                   <div className="footer">
                     <div>Notes: Results are for Medilab Diegnostic.</div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                      <span style={{ 
-                        border: "1.2px dashed #000", 
-                        padding: "3px 5px", 
-                        fontSize: "9px", 
-                        fontWeight: "900", 
-                        borderRadius: "5px", 
-                        lineHeight: "1", 
-                        background: "#fff", 
-                        color: "#000",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        letterSpacing: "0.5px"
-                      }}>DT</span> Powered & Designed by <strong>Mogadisho tech</strong>
+                    <div className="footer-credit">
+                      <span className="footer-credit-logo">DT</span>
+                      <span className="footer-credit-text">
+                        Powered & Designed by&nbsp;<strong style={{ fontWeight: "600", color: "#374151" }}>Mogadisho tech</strong>
+                      </span>
                     </div>
                   </div>
 
@@ -1214,7 +1307,7 @@ export default function App() {
 
               <form onSubmit={handleCreateReportSubmit} className="flex flex-col gap-4 text-sm">
                 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-3 gap-3">
                   <div>
                     <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
                       Patient ID (Lambarka)
@@ -1225,6 +1318,20 @@ export default function App() {
                       placeholder="e.g. 2042"
                       value={newPatient.id}
                       onChange={(e) => setNewPatient((prev) => ({ ...prev, id: e.target.value.trim() }))}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-white placeholder:text-slate-650 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                      Boono #
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. 2026"
+                      value={newPatient.boono}
+                      onChange={(e) => setNewPatient((prev) => ({ ...prev, boono: e.target.value.trim() }))}
                       className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-white placeholder:text-slate-650 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     />
                   </div>
