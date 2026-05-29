@@ -20,7 +20,8 @@ import {
   Stethoscope,
   Info,
   Layers,
-  Sparkles
+  Sparkles,
+  FileDown
 } from "lucide-react";
 import { PatientReport, LabTest } from "./types";
 import { INITIAL_REPORTS } from "./data";
@@ -485,18 +486,28 @@ export default function App() {
               </div>
 
               {/* Action Buttons */}
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  onClick={handlePrint}
-                  className="bg-blue-600 hover:bg-blue-500 text-white font-medium py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-blue-500/10 cursor-pointer"
-                >
-                  <Printer className="w-3.5 h-3.5" /> Print Certificate
-                </button>
+              <div className="flex flex-col gap-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={handlePrint}
+                    className="bg-rose-600 hover:bg-rose-500 text-white font-semibold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-rose-600/10 cursor-pointer"
+                    title="Export laboratory report as high-fidelity PDF format"
+                  >
+                    <FileDown className="w-3.5 h-3.5" /> Export PDF
+                  </button>
+                  <button
+                    onClick={handlePrint}
+                    className="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-blue-500/10 cursor-pointer"
+                    title="Print report using standard print layouts"
+                  >
+                    <Printer className="w-3.5 h-3.5" /> Print Report
+                  </button>
+                </div>
                 <button
                   onClick={() => setShowCreateModal(true)}
-                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-emerald-500/10 cursor-pointer"
+                  className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-emerald-500/10 cursor-pointer"
                 >
-                  <Plus className="w-3.5 h-3.5" /> New Report
+                  <Plus className="w-3.5 h-3.5" /> Create New Report
                 </button>
               </div>
             </div>
@@ -573,11 +584,11 @@ export default function App() {
                   .medilab-sheet .category td { color: #155a79; }
 
                   /* Signatures */
-                  .medilab-sheet .sig-section { display: flex; justify-content: space-between; margin-top: 20px; padding: 15px 0 0 0; border-top: 1.5px dashed #bbb; }
+                  .medilab-sheet .sig-section { display: flex; justify-content: space-between; margin-top: 15px; padding: 12px 0 0 0; border-top: 1.5px dashed #bbb; }
                   .medilab-sheet .sig-box { font-size: 13px; line-height: 1.8; color: #000; text-align: left; }
 
                   /* Footer */
-                  .medilab-sheet .footer { margin-top: 20px; border-top: 1px solid #eee; padding-top: 8px; font-size: 11px; display: flex; justify-content: space-between; color: #555; }
+                  .medilab-sheet .footer { margin-top: 15px; border-top: 1px solid #eee; padding-top: 8px; font-size: 11px; display: flex; justify-content: space-between; color: #555; }
                   .medilab-sheet .qr-section { text-align: center; margin-top: 15px; color: #000; }
 
                   /* Printing custom sheet rule overrides */
@@ -592,34 +603,44 @@ export default function App() {
                       break-inside: avoid !important;
                     }
                     .medilab-sheet .header {
-                      padding-bottom: 8px !important;
-                      margin-bottom: 10px !important;
+                      padding-bottom: 6px !important;
+                      margin-bottom: 8px !important;
                     }
                     .medilab-sheet .info-grid {
-                      gap: 12px !important;
-                      margin-bottom: 12px !important;
+                      gap: 10px !important;
+                      margin-bottom: 10px !important;
                     }
                     .medilab-sheet .box {
-                      padding: 10px 12px !important;
+                      padding: 6px 10px !important;
                     }
                     .medilab-sheet .results-table {
-                      margin-bottom: 12px !important;
+                      margin-bottom: 10px !important;
                     }
                     .medilab-sheet .results-table th, 
                     .medilab-sheet .results-table td {
-                      padding: 4px 6px !important;
+                      padding: 3px 5px !important;
                       font-size: 11px !important;
                     }
                     .medilab-sheet .sig-section {
-                      margin-top: 10px !important;
-                      padding-top: 10px !important;
+                      margin-top: 8px !important;
+                      padding-top: 8px !important;
+                      display: flex !important;
+                      justify-content: space-between !important;
+                    }
+                    .medilab-sheet .sig-box img {
+                      height: 55px !important;
+                      margin-top: 8px !important;
                     }
                     .medilab-sheet .footer {
-                      margin-top: 12px !important;
-                      padding-top: 6px !important;
+                      margin-top: 8px !important;
+                      padding-top: 4px !important;
                     }
                     .medilab-sheet .qr-section {
                       margin-top: 8px !important;
+                    }
+                    .medilab-sheet .qr-section img {
+                      width: 55px !important;
+                      height: 55px !important;
                     }
                   }
                 `}} />
@@ -760,25 +781,28 @@ export default function App() {
                   </table>
 
                   <div className="sig-section">
-                    <div className="sig-box" style={{ flex: "1", fontSize: "14px", color: "#000", lineHeight: "1.8", textAlign: "left" }}>
+                    {/* First column: Name & Signature */}
+                    <div className="sig-box" style={{ flex: "1" }}>
                       <div>
-                        Medilab Diegnostic<br />
+                        <strong>Medilab Diegnostic</strong><br />
                         Name & Signature
                       </div>
                       {isCurrentlyVerified && (
-                        <div style={{ display: "flex", alignItems: "center", marginTop: "35px" }}>
+                        <div style={{ display: "flex", alignItems: "center", marginTop: "20px" }}>
                           <img 
                             src="https://i.postimg.cc/44vc5LBv/Signature.png" 
                             alt="Signature" 
-                            style={{ height: "95px", width: "auto", mixBlendMode: "multiply", display: "block" }} 
+                            style={{ height: "75px", width: "auto", mixBlendMode: "multiply", display: "block" }} 
                             referrerPolicy="no-referrer"
                           />
                         </div>
                       )}
                     </div>
-                    <div className="sig-box" style={{ flex: "1", paddingLeft: "55px", fontSize: "14px", color: "#000", lineHeight: "1.8", textAlign: "left" }}>
+
+                    {/* Second column: Doctor Authorization */}
+                    <div className="sig-box" style={{ flex: "1", paddingLeft: "55px" }}>
                       <div>
-                        Authorized By<br />
+                        <strong>Authorized By</strong><br />
                         {activeReport?.doctor || "sadam adan Ahmed"}
                       </div>
                     </div>
@@ -786,9 +810,11 @@ export default function App() {
 
                   <div className="footer">
                     <div>Notes: Results are for Medilab Diegnostic.</div>
-                    <div><strong>DT</strong> Powered & Designed by <strong>Mogadisho tech</strong></div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                      <span style={{ border: "1.5px solid #000", padding: "1px 4px", fontSize: "10px", fontWeight: "800", borderRadius: "3px", lineHeight: "1", background: "#fff" }}>DT</span> Powered & Designed by <strong>Mogadisho tech</strong>
+                    </div>
                   </div>
-                  
+
                   <div className="qr-section">
                     <div style={{ background: "#fff", width: "80px", height: "80px", margin: "auto", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid #eee", borderRadius: "4px" }}>
                       {activeReport ? (
@@ -806,11 +832,6 @@ export default function App() {
                       )}
                     </div>
                     <div style={{ fontSize: "10px", marginTop: "6px", fontWeight: "bold" }}>Scan to Verify Result</div>
-                    <div style={{ fontSize: "9px", marginTop: "2px" }}>
-                      <a href="https://mymedilabscom.vercel.app/" target="_blank" rel="noopener noreferrer" style={{ color: "#155a79", textDecoration: "underline", fontWeight: "600" }}>
-                        mymedilabscom.vercel.app
-                      </a>
-                    </div>
                   </div>
 
                 </div>
