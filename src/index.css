@@ -9,14 +9,41 @@
 
 /* Print optimizations for the diagnostic report */
 @media print {
-  body {
-    background: white !important;
-    padding: 0 !important;
-    color: black !important;
+  @page {
+    size: portrait;
+    margin: 8mm 12mm 8mm 12mm !important;
   }
+  
+  html, body {
+    background: white !important;
+    color: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Reset layout constraints from standard UI to prevent double pagination */
+  #medilab-system-root, main, #report-view-canvas, .bg-slate-900 {
+    display: block !important;
+    background: white !important;
+    color: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    position: static !important;
+  }
+
   .no-print {
     display: none !important;
   }
+
   .print-container {
     box-shadow: none !important;
     border: none !important;
@@ -25,11 +52,13 @@
     padding: 0 !important;
     width: 100% !important;
   }
+
   .print-card {
     box-shadow: none !important;
     border-left: 5px solid #3cb54a !important;
     background: #fdfdfd !important;
   }
+
   .print-header {
     box-shadow: none !important;
     background: white !important;

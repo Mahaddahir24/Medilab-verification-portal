@@ -548,37 +548,80 @@ export default function App() {
               {/* CORE MEDICAL REPORT CONTAINER */}
               <div className="medilab-sheet mx-auto" style={{ maxWidth: "808px" }}>
                 <style dangerouslySetInnerHTML={{__html: `
-                  .medilab-sheet .container-sheet { max-width: 800px; margin: auto; border: 1px solid #ccc; padding: 30px; background: #fff; color: #000; font-family: 'Arial', sans-serif; text-align: left; }
+                  .medilab-sheet .container-sheet { max-width: 800px; margin: auto; border: 1px solid #ccc; padding: 25px 30px; background: #fff; color: #000; font-family: 'Arial', sans-serif; text-align: left; box-sizing: border-box; }
                   
                   /* Header */
-                  .medilab-sheet .header { display: flex; justify-content: space-between; border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
+                  .medilab-sheet .header { display: flex; justify-content: space-between; border-bottom: 2px solid #eee; padding-bottom: 12px; margin-bottom: 15px; }
                   .medilab-sheet .logo-box { display: flex; align-items: center; }
                   .medilab-sheet .logo { width: 60px; height: 60px; margin-right: 15px; }
                   .medilab-sheet .lab-name { font-weight: bold; font-size: 20px; color: #3534d8; }
                   .medilab-sheet .meta-info { text-align: right; font-size: 13px; line-height: 1.5; color: #000; }
 
                   /* Information Sections */
-                  .medilab-sheet .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
-                  .medilab-sheet .box { border: 1px solid #aaa; padding: 15px; border-radius: 5px; background: #fff; }
-                  .medilab-sheet .box h3 { font-size: 14px; color: #155a79; margin: 0 0 10px 0; border-bottom: 1px solid #eee; padding-bottom: 5px; font-weight: bold; }
-                  .medilab-sheet .row { display: flex; font-size: 13px; margin-bottom: 5px; line-height: 1.5; }
+                  .medilab-sheet .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+                  .medilab-sheet .box { border: 1px solid #aaa; padding: 12px 15px; border-radius: 5px; background: #fff; }
+                  .medilab-sheet .box h3 { font-size: 14px; color: #155a79; margin: 0 0 8px 0; border-bottom: 1px solid #eee; padding-bottom: 5px; font-weight: bold; }
+                  .medilab-sheet .row { display: flex; font-size: 13px; margin-bottom: 4px; line-height: 1.5; }
                   .medilab-sheet .label { width: 110px; color: #555; flex-shrink: 0; }
                   .medilab-sheet .value { font-weight: bold; color: #000; }
 
                   /* Table */
-                  .medilab-sheet .results-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-                  .medilab-sheet .results-table th { text-align: left; border-bottom: 1px solid #aaa; padding: 8px; font-size: 14px; color: #155a79; font-weight: bold; }
-                  .medilab-sheet .results-table td { padding: 8px; font-size: 13px; border-bottom: 1px solid #eee; color: #000; }
+                  .medilab-sheet .results-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                  .medilab-sheet .results-table th { text-align: left; border-bottom: 1px solid #aaa; padding: 6px 8px; font-size: 14px; color: #155a79; font-weight: bold; }
+                  .medilab-sheet .results-table td { padding: 6px 8px; font-size: 13px; border-bottom: 1px solid #eee; color: #000; }
                   .medilab-sheet .category { background: #f9f9f9; font-weight: bold; color: #155a79; }
                   .medilab-sheet .category td { color: #155a79; }
 
                   /* Signatures */
-                  .medilab-sheet .sig-section { display: flex; justify-content: space-between; margin-top: 30px; padding: 25px 0 0 0; border-top: 1.5px dashed #bbb; }
-                  .medilab-sheet .sig-box { font-size: 13px; line-height: 2.0; color: #000; text-align: left; }
+                  .medilab-sheet .sig-section { display: flex; justify-content: space-between; margin-top: 20px; padding: 15px 0 0 0; border-top: 1.5px dashed #bbb; }
+                  .medilab-sheet .sig-box { font-size: 13px; line-height: 1.8; color: #000; text-align: left; }
 
                   /* Footer */
-                  .medilab-sheet .footer { margin-top: 50px; border-top: 1px solid #eee; padding-top: 10px; font-size: 12px; display: flex; justify-content: space-between; color: #555; }
-                  .medilab-sheet .qr-section { text-align: center; margin-top: 20px; color: #000; }
+                  .medilab-sheet .footer { margin-top: 20px; border-top: 1px solid #eee; padding-top: 8px; font-size: 11px; display: flex; justify-content: space-between; color: #555; }
+                  .medilab-sheet .qr-section { text-align: center; margin-top: 15px; color: #000; }
+
+                  /* Printing custom sheet rule overrides */
+                  @media print {
+                    .medilab-sheet .container-sheet {
+                      padding: 10px 15px !important;
+                      margin: 0 auto !important;
+                      border: none !important;
+                      max-width: 100% !important;
+                      box-shadow: none !important;
+                      page-break-inside: avoid !important;
+                      break-inside: avoid !important;
+                    }
+                    .medilab-sheet .header {
+                      padding-bottom: 8px !important;
+                      margin-bottom: 10px !important;
+                    }
+                    .medilab-sheet .info-grid {
+                      gap: 12px !important;
+                      margin-bottom: 12px !important;
+                    }
+                    .medilab-sheet .box {
+                      padding: 10px 12px !important;
+                    }
+                    .medilab-sheet .results-table {
+                      margin-bottom: 12px !important;
+                    }
+                    .medilab-sheet .results-table th, 
+                    .medilab-sheet .results-table td {
+                      padding: 4px 6px !important;
+                      font-size: 11px !important;
+                    }
+                    .medilab-sheet .sig-section {
+                      margin-top: 10px !important;
+                      padding-top: 10px !important;
+                    }
+                    .medilab-sheet .footer {
+                      margin-top: 12px !important;
+                      padding-top: 6px !important;
+                    }
+                    .medilab-sheet .qr-section {
+                      margin-top: 8px !important;
+                    }
+                  }
                 `}} />
 
                 <div className="container-sheet relative">
