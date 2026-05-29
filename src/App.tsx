@@ -215,7 +215,7 @@ export default function App() {
     : "";
 
   const qrCodeUrl = verificationLink
-    ? `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(verificationLink)}&color=0459a8`
+    ? `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(verificationLink)}&color=000000`
     : "";
 
   return (
@@ -538,302 +538,224 @@ export default function App() {
               </AnimatePresence>
 
               {/* CORE MEDICAL REPORT CONTAINER */}
-              <div className="max-w-4xl mx-auto flex flex-col gap-4 bg-transparent">
-                
-                {/* 1. STATE EMBLEM & MEDICAL BRAND HEADER */}
-                <div className="print-header bg-gradient-to-r from-[#eaf2fd] to-white rounded-xl py-4 px-4 sm:px-6 flex items-center justify-between gap-4 shadow-sm border border-slate-200/50 print:bg-white print:border-none print:shadow-none">
+              <div className="medilab-sheet mx-auto" style={{ maxWidth: "808px" }}>
+                <style dangerouslySetInnerHTML={{__html: `
+                  .medilab-sheet .container-sheet { max-width: 800px; margin: auto; border: 1px solid #ccc; padding: 30px; background: #fff; color: #000; font-family: 'Arial', sans-serif; text-align: left; }
                   
-                  {/* Left Clinic Logo Emblem */}
-                  <div className="flex flex-col items-center">
-                    <div className="w-16 h-16 bg-white rounded-full border border-blue-100 flex items-center justify-center shadow-sm relative shrink-0">
-                      {/* Medilab stylized SVG cross and diagnostic lines */}
-                      <svg viewBox="0 0 100 100" className="w-12 h-12">
-                        <circle cx="50" cy="50" r="45" fill="none" stroke="#0459a8" strokeWidth="6" />
-                        <rect x="42" y="25" width="16" height="50" rx="4" fill="#1b9bc5" />
-                        <rect x="25" y="42" width="50" height="16" rx="4" fill="#3cb54a" />
-                        <path d="M 45 45 L 55 45 L 55 55 L 45 55 Z" fill="white" />
-                      </svg>
+                  /* Header */
+                  .medilab-sheet .header { display: flex; justify-content: space-between; border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
+                  .medilab-sheet .logo-box { display: flex; align-items: center; }
+                  .medilab-sheet .logo { width: 60px; height: 60px; margin-right: 15px; }
+                  .medilab-sheet .lab-name { font-weight: bold; font-size: 20px; color: #3534d8; }
+                  .medilab-sheet .meta-info { text-align: right; font-size: 13px; line-height: 1.5; color: #000; }
+
+                  /* Information Sections */
+                  .medilab-sheet .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
+                  .medilab-sheet .box { border: 1px solid #aaa; padding: 15px; border-radius: 5px; background: #fff; }
+                  .medilab-sheet .box h3 { font-size: 14px; color: #155a79; margin: 0 0 10px 0; border-bottom: 1px solid #eee; padding-bottom: 5px; font-weight: bold; }
+                  .medilab-sheet .row { display: flex; font-size: 13px; margin-bottom: 5px; line-height: 1.5; }
+                  .medilab-sheet .label { width: 110px; color: #555; flex-shrink: 0; }
+                  .medilab-sheet .value { font-weight: bold; color: #000; }
+
+                  /* Table */
+                  .medilab-sheet .results-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+                  .medilab-sheet .results-table th { text-align: left; border-bottom: 1px solid #aaa; padding: 8px; font-size: 14px; color: #155a79; font-weight: bold; }
+                  .medilab-sheet .results-table td { padding: 8px; font-size: 13px; border-bottom: 1px solid #eee; color: #000; }
+                  .medilab-sheet .category { background: #f9f9f9; font-weight: bold; color: #155a79; }
+                  .medilab-sheet .category td { color: #155a79; }
+
+                  /* Signatures */
+                  .medilab-sheet .sig-section { display: flex; justify-content: space-between; margin-top: 30px; padding: 25px 0 0 0; border-top: 1.5px dashed #bbb; }
+                  .medilab-sheet .sig-box { font-size: 13px; line-height: 2.0; color: #000; text-align: left; }
+
+                  /* Footer */
+                  .medilab-sheet .footer { margin-top: 50px; border-top: 1px solid #eee; padding-top: 10px; font-size: 12px; display: flex; justify-content: space-between; color: #555; }
+                  .medilab-sheet .qr-section { text-align: center; margin-top: 20px; color: #000; }
+                `}} />
+
+                <div className="container-sheet relative">
+                  
+                  {/* OVERLAY DIAGONAL STATE IF UNVERIFIED COUBNTERFEIT WARNING */}
+                  <AnimatePresence>
+                    {!isCurrentlyVerified && (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center overflow-hidden"
+                      >
+                        {/* diagonal red banner watermark */}
+                        <div className="absolute transform -rotate-25 bg-red-600/15 border-y-4 border-red-500/40 text-red-600/70 py-4 px-12 text-center select-none w-[120%] font-black tracking-widest text-[22px] md:text-[36px] uppercase">
+                          INVALID DOCUMENT • DIGNIIN REPORT FAUX
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  <div className="header">
+                    <div className="logo-box">
+                      <img 
+                        src="https://i.postimg.cc/SxkDdY6z/Logo.png" 
+                        alt="MEDILAB DIAGNOSTIC Logo" 
+                        className="logo"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div>
+                        <div className="lab-name">MEDILAB DIAGNOSTIC</div>
+                        <div style={{ fontSize: "12px", color: "#333" }}>Address: Aden Adde Airport, Mogadishu-Somalia</div>
+                        <div style={{ fontSize: "12px", color: "#333" }}>Tel: +252 613523011 • Email: m.labsdiagnostic@gmail.com</div>
+                      </div>
                     </div>
-                    <span className="text-[8px] font-bold text-[#0459a8] mt-1 tracking-widest font-mono">EST. 2018</span>
+                    <div className="meta-info">
+                      <strong>Boono #:</strong> {activeReport?.id || "2026"}<br />
+                      <strong>Printed:</strong> {activeReport?.resultDate || "24 May 2026"}<br />
+                      <strong>Printed By:</strong> {activeReport?.doctor || "sadam adan Ahmed"}
+                    </div>
                   </div>
 
-                  {/* Header Center Title Details */}
-                  <div className="text-center flex-1">
-                    <h1 className="text-[#0459a8] font-semibold text-lg sm:text-2xl md:text-3xl font-display uppercase tracking-tight font-extrabold flex items-center justify-center gap-1.5 leading-none">
-                      MEDILAB <span className="text-[#1b9bc5]">DIAGNOSTIC CENTER</span>
-                    </h1>
-                    <p className="text-slate-500 font-display font-medium text-xs sm:text-sm mt-1 tracking-wide">
-                      Official Laboratory Verification Report
-                    </p>
-
-                    <div className="w-4/5 h-1 bg-[#1b9bc5] mx-auto mt-2.5 rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-[#0459a8] via-[#1b9bc5] to-[#3cb54a]" />
+                  {/* 2. DYNAMIC INTEGRITY ALERT WARNING */}
+                  {!isCurrentlyVerified && (
+                    <div style={{ marginBottom: "15px", padding: "10px", background: "#fdf2f2", borderLeft: "4px solid #f05252", borderRadius: "4px", color: "#9b1c1c", fontSize: "12px", textAlign: "left" }}>
+                      <strong style={{ display: "block", textTransform: "uppercase", marginBottom: "2px" }}>⚠️ INVALID DOCUMENT / SYSTEM COUBNTERFEIT WARNING</strong>
+                      This report has been marked as suspended or simulated and does not match central health registry logs.
                     </div>
+                  )}
 
-                    <div className="text-[10px] sm:text-xs text-slate-650 leading-relaxed max-w-lg mx-auto font-sans font-medium mt-2 text-[#445]">
-                      <b className="text-slate-800">Address:</b> Aden Adde International Airport, Next To Dahabshiil Bank, Waberi, Mogadishu-Somalia<br />
-                      <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 mt-0.5 font-sans">
-                        <span><b>Tel:</b> +252 613523011</span>
-                        <span className="hidden sm:inline">•</span>
-                        <span><b>Email:</b> m.labsdiagnostic@gmail.com</span>
+                  <div className="info-grid">
+                    <div className="box">
+                      <h3>PATIENT INFORMATION</h3>
+                      <div className="row">
+                        <div className="label">Patient Name</div>
+                        <div className="value">{activeReport?.name || "MYKOLA VORONA"}</div>
+                      </div>
+                      <div className="row">
+                        <div className="label">Patient ID</div>
+                        <div className="value font-mono">{activeReport?.id || "1876"}</div>
+                      </div>
+                      <div className="row">
+                        <div className="label">Age / Gender</div>
+                        <div className="value">{activeReport?.age || "44"} / {activeReport?.gender || "Male"}</div>
+                      </div>
+                      <div className="row">
+                        <div className="label">Phone</div>
+                        <div className="value font-mono">{activeReport?.phone || "839180"}</div>
+                      </div>
+                      <div className="row">
+                        <div className="label">Passport NO</div>
+                        <div className="value font-mono">{activeReport?.passportNo || "FS879183"}</div>
+                      </div>
+                    </div>
+                    <div className="box">
+                      <h3>LAB ORDER DETAILS</h3>
+                      <div className="row">
+                        <div className="label">Company</div>
+                        <div className="value">{activeReport?.company || "UKRANIAN HELICOPTERS"}</div>
+                      </div>
+                      <div className="row">
+                        <div className="label">Sample Type</div>
+                        <div className="value">Blood</div>
+                      </div>
+                      <div className="row">
+                        <div className="label">Collected By</div>
+                        <div className="value">Medilab</div>
+                      </div>
+                      <div className="row">
+                        <div className="label">result time</div>
+                        <div className="value font-mono">{activeReport?.resultDate || "2026-05-24"}</div>
+                      </div>
+                      <div className="row">
+                        <div className="label">Status</div>
+                        <div className="value" style={{ color: "#000000" }}>Final</div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Right Mirror Logo Emblem */}
-                  <div className="hidden sm:flex flex-col items-center">
-                    <div className="w-16 h-16 bg-white rounded-full border border-blue-100 flex items-center justify-center shadow-sm shrink-0">
-                      <svg viewBox="0 0 100 100" className="w-12 h-12">
-                        <circle cx="50" cy="50" r="45" fill="none" stroke="#0459a8" strokeWidth="6" />
-                        <rect x="42" y="25" width="16" height="50" rx="4" fill="#1b9bc5" />
-                        <rect x="25" y="42" width="50" height="16" rx="4" fill="#3cb54a" />
-                        <path d="M 45 45 L 55 45 L 55 55 L 45 55 Z" fill="white" />
-                      </svg>
-                    </div>
-                    <span className="text-[8px] font-bold text-[#1b9bc5] mt-1 tracking-widest font-mono font-bold">MOGADISHU</span>
-                  </div>
+                  <h3 style={{ color: "#155a79", fontSize: "15px", fontWeight: "bold", margin: "0 0 12px 0", textAlign: "left", textTransform: "uppercase" }}>TEST RESULTS</h3>
+                  <table className="results-table">
+                    <thead>
+                      <tr>
+                        <th>Test Name</th>
+                        <th>Result</th>
+                        <th>Unit</th>
+                        <th>Reference Range</th>
+                        <th>Remarks</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="category">
+                        <td colSpan={5}>Immunology</td>
+                      </tr>
+                      {activeReport?.tests.map((test, idx) => {
+                        const isNegative = test.result === "Negative" || test.result === "Non-Reactive";
+                        return (
+                          <tr key={idx}>
+                            <td style={{ fontWeight: "600" }}>{test.name}</td>
+                            <td>
+                              {isCurrentlyVerified ? test.result : "REJECTED"}
+                            </td>
+                            <td style={{ fontFamily: "monospace", color: "#666" }}>{test.unit}</td>
+                            <td>Negative</td>
+                            <td style={{ fontStyle: "italic", color: "#666" }}>
+                              {isCurrentlyVerified ? (
+                                test.remark || ""
+                              ) : (
+                                <span style={{ color: "#e03131", fontWeight: "bold", textTransform: "uppercase", fontSize: "11px" }}>Invalid Checksum</span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
 
-                </div>
-
-                {/* 2. DYNAMIC INTEGRITY ALERT SUCCESS / FAILED BANNER */}
-                <div 
-                  className={`mt-1 border-l-[6px] rounded-r-xl p-4 transition-all duration-300 shadow-md ${
-                    isCurrentlyVerified
-                      ? "bg-emerald-50 border-emerald-500 text-emerald-900"
-                      : "bg-red-50 border-red-500 text-red-900"
-                  }`}
-                >
-                  <div className="flex items-start gap-3">
-                    <div className={`mt-0.5 p-1 rounded-full ${isCurrentlyVerified ? "bg-emerald-100/80 text-emerald-600" : "bg-red-100/80 text-red-600"}`}>
-                      {isCurrentlyVerified ? (
-                        <ShieldCheck className="w-6 h-6 shrink-0" />
-                      ) : (
-                        <ShieldAlert className="w-6 h-6 shrink-0 animate-bounce" />
+                  <div className="sig-section">
+                    <div className="sig-box" style={{ flex: "1", fontSize: "14px", color: "#000", lineHeight: "1.8", textAlign: "left" }}>
+                      <div>
+                        Medilab Diegnostic<br />
+                        Name & Signature
+                      </div>
+                      {isCurrentlyVerified && (
+                        <div style={{ display: "flex", alignItems: "center", marginTop: "35px" }}>
+                          <img 
+                            src="https://i.postimg.cc/44vc5LBv/Signature.png" 
+                            alt="Signature" 
+                            style={{ height: "95px", width: "auto", mixBlendMode: "multiply", display: "block" }} 
+                            referrerPolicy="no-referrer"
+                          />
+                        </div>
                       )}
                     </div>
-                    <div>
-                      <h3 className="font-extrabold text-[#1c6c2b] text-[16px] md:text-xl flex items-center gap-1.5">
-                        {isCurrentlyVerified 
-                          ? "✅ Patient waa sax wuxuuna ka yimid Medilab Diagnostic System" 
-                          : "❌ DIGNIIN: Lab Report-kan kama diiwaan gashan diiwaanka Medilab"}
-                      </h3>
-                      <p className="text-xs sm:text-sm text-slate-650 font-medium mt-1">
-                        {isCurrentlyVerified 
-                          ? "This patient clearance report is verified as authentic, matching centralized logs at Medilab Mogadishu." 
-                          : "Authentication failure: The verification token or patient data does not match the central system."}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 3. PATIENT BIO GRID CARD */}
-                <div className="print-card bg-[#f7f7f7] rounded-xl border-l-[5px] border-[#3cb54a] p-5 sm:p-6 shadow-sm border border-slate-200/50 flex flex-col md:flex-row md:justify-between gap-6 print:bg-white">
-                  
-                  {/* Left bio fields block */}
-                  <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-y-3.5 gap-x-6 text-[#222]">
-                    <div className="text-sm">
-                      <span className="text-slate-500 text-xs font-semibold block uppercase tracking-wider">Patient Identification</span>
-                      <span className="font-extrabold text-[15px] sm:text-base text-slate-900 font-display flex items-center gap-1 mt-0.5">
-                        <User className="w-4 h-4 text-theme-dark/10 text-blue-500 shrink-0" /> {activeReport?.name || "UNKNOWN"}
-                      </span>
-                    </div>
-
-                    <div className="text-sm">
-                      <span className="text-slate-500 text-xs font-semibold block uppercase tracking-wider">Patient ID Number</span>
-                      <span className="font-mono font-bold text-slate-800 text-[14px] mt-0.5 bg-slate-200/75 print:bg-transparent px-1.5 py-0.5 rounded inline-block">
-                        {activeReport?.id || "N/A"}
-                      </span>
-                    </div>
-
-                    <div className="text-sm">
-                      <span className="text-slate-500 text-xs font-semibold block uppercase tracking-wider">Age & Gender</span>
-                      <span className="font-bold text-slate-800 mt-0.5 block">
-                        {activeReport?.age || "0"} Years old <span className="text-slate-400">|</span> {activeReport?.gender || "Other"}
-                      </span>
-                    </div>
-
-                    <div className="text-sm">
-                      <span className="text-slate-500 text-xs font-semibold block uppercase tracking-wider">Passport Number</span>
-                      <span className="font-bold text-slate-800 tracking-wide font-mono mt-0.5 block uppercase">
-                        {activeReport?.passportNo || "N/A"}
-                      </span>
-                    </div>
-
-                    <div className="text-sm">
-                      <span className="text-slate-500 text-xs font-semibold block uppercase tracking-wider">Employer / Company Name</span>
-                      <span className="font-bold text-slate-800 tracking-wide mt-0.5 flex items-center gap-1">
-                        <Building className="w-3.5 h-3.5 text-slate-400 shrink-0" /> {activeReport?.company || "PRIVATE INDIVIDUAL"}
-                      </span>
-                    </div>
-
-                    <div className="text-sm">
-                      <span className="text-slate-500 text-xs font-semibold block uppercase tracking-wider">Telephone Line</span>
-                      <span className="font-bold text-slate-800 mt-0.5 block font-mono">
-                        {activeReport?.phone || "N/A"}
-                      </span>
-                    </div>
-
-                    <div className="text-sm">
-                      <span className="text-slate-500 text-xs font-semibold block uppercase tracking-wider">Certified Medical Practitioner</span>
-                      <span className="font-bold text-slate-800 mt-0.5 flex items-center gap-1 capitalize">
-                        <Stethoscope className="w-3.5 h-3.5 text-teal-500 shrink-0" /> {activeReport?.doctor || "N/A"}
-                      </span>
-                    </div>
-
-                    <div className="text-sm">
-                      <span className="text-slate-500 text-xs font-semibold block uppercase tracking-wider">Verification Date</span>
-                      <span className="font-bold text-slate-800 mt-0.5 flex items-center gap-1 font-mono">
-                        <Calendar className="w-3.5 h-3.5 text-blue-500 shrink-0" /> {activeReport?.resultDate || "N/A"}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Right stamp validation box */}
-                  <div className="md:w-44 shrink-0 flex flex-col items-center justify-center border-t md:border-t-0 md:border-l border-slate-200/80 pt-4 md:pt-0 md:pl-4">
-                    <div className="flex flex-col items-center text-center">
-                      <div className="w-24 h-24 bg-blue-50/50 rounded-xl border border-blue-100 flex items-center justify-center relative shadow-sm p-1">
-                        {isCurrentlyVerified ? (
-                          <>
-                            {/* Medilab Diagnostic Seal SVG */}
-                            <svg viewBox="0 0 100 100" className="w-full h-full opacity-85 rotate-12">
-                              <circle cx="50" cy="50" r="42" fill="none" stroke="#0459a8" strokeWidth="2" strokeDasharray="3 3" />
-                              <circle cx="50" cy="50" r="38" fill="none" stroke="#0459a8" strokeWidth="1" />
-                              <path id="sealPath" d="M 22 50 A 28 28 0 1 1 78 50" fill="none" />
-                              <text className="text-[7.5px] font-bold font-mono text-[#0459a8]" tracking-widest="2.5">
-                                <textPath href="#sealPath" startOffset="10%">MEDILAB DIAGNOSTIC</textPath>
-                              </text>
-                              <circle cx="50" cy="50" r="22" fill="#eaf2fd/30" stroke="#3cb54a" strokeWidth="1.5" />
-                              <text x="50" y="47" textAnchor="middle" className="text-[7px] font-bold font-mono text-[#0459a8]">VERIFIED</text>
-                              <text x="50" y="56" textAnchor="middle" className="text-[8px] font-extrabold fill-[#3cb54a]">OK</text>
-                              <text x="50" y="65" textAnchor="middle" className="text-[5.5px] fill-slate-500 font-mono">SEAL</text>
-                            </svg>
-                          </>
-                        ) : (
-                          <div className="flex flex-col items-center text-red-600">
-                            <ShieldAlert className="w-10 h-10 animate-ping" />
-                            <span className="text-[10px] uppercase font-bold tracking-tight mt-1 font-mono">BLOCKED</span>
-                          </div>
-                        )}
+                    <div className="sig-box" style={{ flex: "1", paddingLeft: "55px", fontSize: "14px", color: "#000", lineHeight: "1.8", textAlign: "left" }}>
+                      <div>
+                        Authorized By<br />
+                        {activeReport?.doctor || "sadam adan Ahmed"}
                       </div>
-                      <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mt-2 block font-semibold">
-                        {isCurrentlyVerified ? "Official Seal" : "Seal Revoked"}
-                      </span>
                     </div>
                   </div>
 
-                </div>
-
-                {/* 4. CLINICAL IMMUNOLOGY LAB SHEET */}
-                <div className="rounded-xl overflow-hidden shadow-sm border border-slate-200/50">
+                  <div className="footer">
+                    <div>Notes: Results are for Medilab Diegnostic.</div>
+                    <div><strong>DT</strong> Powered & Designed by <strong>Mogadisho tech</strong></div>
+                  </div>
                   
-                  {/* Immunology Heading Ribbon */}
-                  <div className="bg-[#0075f2] text-white px-4 py-3 font-semibold font-display tracking-wide text-sm sm:text-base flex items-center justify-between">
-                    <span>Clinical Immunology</span>
-                    <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full font-mono">
-                      Blood Panel Clearance
-                    </span>
-                  </div>
-
-                  {/* Immunology Results Table */}
-                  <div className="overflow-x-auto">
-                    <table className="w-full border-collapse bg-[#f7f7f7] text-left text-sm print:bg-white m-0 rounded-none shadow-none">
-                      <thead>
-                        <tr className="bg-[#eceff1] border-b border-slate-200">
-                          <th className="py-3.5 px-4 font-semibold text-slate-700 font-display border border-slate-200 text-xs uppercase tracking-wider">Test / Diagnostic Assay</th>
-                          <th className="py-3.5 px-4 font-semibold text-slate-700 font-display border border-slate-200 text-xs uppercase tracking-wider">Measured Result</th>
-                          <th className="py-3.5 px-4 font-semibold text-slate-700 font-display border border-slate-200 text-xs uppercase tracking-wider">Unit</th>
-                          <th className="py-3.5 px-4 font-semibold text-slate-700 font-display border border-slate-200 text-xs uppercase tracking-wider">Clinical Remark</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-200">
-                        {activeReport?.tests.map((test, index) => {
-                          const isNegative = test.result === "Negative" || test.result === "Non-Reactive";
-                          return (
-                            <tr key={index} className="hover:bg-slate-50/50 transition-colors bg-white print:hover:bg-white">
-                              {/* Test Name */}
-                              <td className="py-3.5 px-4 border border-slate-200 font-medium text-slate-900">
-                                {test.name}
-                              </td>
-                              {/* Test Result Indicator */}
-                              <td className="py-3.5 px-4 border border-slate-200 font-bold">
-                                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs ${
-                                  isNegative
-                                    ? "bg-emerald-50 text-emerald-800 font-bold border border-emerald-200"
-                                    : "bg-red-50 text-red-800 font-bold border border-red-200 animate-pulse"
-                                }`}>
-                                  <span className={`w-1.5 h-1.5 rounded-full ${isNegative ? "bg-emerald-500" : "bg-red-600"}`}></span>
-                                  {isCurrentlyVerified ? test.result : "REJECTED"}
-                                </span>
-                              </td>
-                              {/* Test Unit */}
-                              <td className="py-2.5 px-4 border border-slate-200 font-mono text-slate-500 text-xs capitalize">
-                                {test.unit}
-                              </td>
-                              {/* Remark */}
-                              <td className="py-2.5 px-4 border border-slate-200 text-slate-500 italic text-xs">
-                                {isCurrentlyVerified ? (
-                                  test.remark || <span className="text-slate-400 font-normal">Normal immunological bounds</span>
-                                ) : (
-                                  <span className="text-red-500 font-bold uppercase tracking-wider">Invalid Checksum</span>
-                                )}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                {/* 5. METRIC STAMP BLOCK & SIGNATORY LINES */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-2 pt-4 border-t border-slate-300 border-dashed text-slate-700">
-                  
-                  {/* Terms & Conditions advisory disclaimer block */}
-                  <div className="text-[11px] text-slate-550 leading-relaxed font-sans mt-1">
-                    <span className="font-bold text-slate-800 uppercase tracking-wide block mb-1">Authenticity & Legal Notice:</span>
-                    This report verifies biological immunology clearance for transit validation. Altering or printing simulated or fake certificate letters is subject to legal penalty under Somalian Federal Aviation and Port regulations. Medilab database retains absolute digital logs for safety reference.
-                  </div>
-
-                  {/* Signatory authorized signature line */}
-                  <div className="flex flex-col items-end text-right justify-end pr-2">
-                    <div className="flex flex-col items-center">
-                      <div className="h-10 relative flex items-center justify-center translate-y-2 select-none">
-                        {/* doctor's simulated elegant cursive signature path */}
-                        {isCurrentlyVerified ? (
-                          <svg viewBox="0 0 150 40" className="w-36 h-10 opacity-80">
-                            <path
-                              d="M10,25 Q30,15 45,20 T70,18 T95,25 Q115,10 130,15 T145,20"
-                              fill="none"
-                              stroke="#002d62"
-                              strokeWidth="2.5"
-                              strokeLinecap="round"
-                            />
-                            <circle cx="45" cy="20" r="1.5" fill="#3cb54a" />
-                          </svg>
-                        ) : (
-                          <span className="text-red-500 font-bold uppercase tracking-widest text-[11px] border border-red-500 p-1 bg-red-50 rounded">
-                            BLOCKED BY CONTROL
-                          </span>
-                        )}
-                      </div>
-                      <div className="w-48 border-t border-slate-400 my-1"></div>
-                      <span className="text-xs font-bold text-slate-900 block tracking-tight">Dr. Sadam Adan Ahmed</span>
-                      <span className="text-[10px] text-slate-500 uppercase font-mono tracking-widest block font-medium">
-                        Head of Immunology Research
-                      </span>
+                  <div className="qr-section">
+                    <div style={{ background: "#fff", width: "80px", height: "80px", margin: "auto", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid #eee", borderRadius: "4px" }}>
+                      {activeReport ? (
+                        <img
+                          src={qrCodeUrl}
+                          alt="Verification QR"
+                          className="w-20 h-20 select-none"
+                          style={{ width: "80px", height: "80px" }}
+                          referrerPolicy="no-referrer"
+                        />
+                      ) : (
+                        <div style={{ background: "#eee", width: "80px", height: "80px" }}>[QR]</div>
+                      )}
                     </div>
+                    <div style={{ fontSize: "10px", marginTop: "6px", fontWeight: "bold" }}>Scan to Verify Result</div>
                   </div>
 
                 </div>
-
-                {/* 6. IMMIGRATION CONTROL FOOTER LOGS */}
-                <footer className="footer-line mt-6 border-t-[3px] border-[#1b84d6] pt-4 text-center text-slate-500 text-xs leading-relaxed">
-                  © 2026 Medilab Diagnostic Center — All rights reserved.<br />
-                  <span className="font-display font-semibold text-slate-650 tracking-wide mt-1 block">
-                    Designed & Verified by Daryeel Tech IT Team
-                  </span>
-                </footer>
-
               </div>
             </div>
           </div>
