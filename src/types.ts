@@ -7,6 +7,7 @@ export interface LabTest {
 
 export interface PatientReport {
   id: string; // Patient ID
+  boono?: string; // Boono number
   name: string;
   age: number;
   gender: "Male" | "Female" | "Other";
