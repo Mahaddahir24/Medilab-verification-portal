@@ -570,7 +570,7 @@ export default function App() {
                   .medilab-sheet .category td { color: #155a79; }
 
                   /* Signatures */
-                  .medilab-sheet .sig-section { display: flex; justify-content: space-between; margin-top: 15px; padding: 12px 0 0 0; border-top: 1.5px dashed #bbb; }
+                  .medilab-sheet .sig-section { display: flex; justify-content: space-between; margin-top: 15px; padding: 12px 0 0 0; border-top: 1.5px dashed #bbb; position: relative; }
                   .medilab-sheet .sig-box { font-size: 13px; line-height: 1.8; color: #000; text-align: left; }
 
                   /* Footer */
@@ -778,7 +778,7 @@ export default function App() {
                           <img 
                             src="https://i.postimg.cc/44vc5LBv/Signature.png" 
                             alt="Signature" 
-                            style={{ height: "95px", width: "auto", mixBlendMode: "multiply", display: "block" }} 
+                            style={{ height: "115px", width: "auto", mixBlendMode: "multiply", display: "block" }} 
                             referrerPolicy="no-referrer"
                           />
                         </div>
