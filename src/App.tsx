@@ -774,17 +774,11 @@ export default function App() {
                         Name & Signature
                       </div>
                       {isCurrentlyVerified && (
-                        <div style={{ display: "flex", alignItems: "center", gap: "25px", marginTop: "20px" }}>
+                        <div style={{ display: "flex", alignItems: "center", marginTop: "20px" }}>
                           <img 
                             src="https://i.postimg.cc/44vc5LBv/Signature.png" 
                             alt="Signature" 
                             style={{ height: "95px", width: "auto", mixBlendMode: "multiply", display: "block" }} 
-                            referrerPolicy="no-referrer"
-                          />
-                          <img 
-                            src="https://i.postimg.cc/SxkDdY6z/Logo.png" 
-                            alt="Stamp" 
-                            style={{ height: "90px", width: "auto", mixBlendMode: "multiply", display: "block" }} 
                             referrerPolicy="no-referrer"
                           />
                         </div>
