@@ -23,7 +23,9 @@ import {
   Info,
   Layers,
   Sparkles,
-  FileDown
+  FileDown,
+  MapPin,
+  ChevronRight
 } from "lucide-react";
 import { PatientReport, LabTest } from "./types";
 import { INITIAL_REPORTS } from "./data";
@@ -124,6 +126,19 @@ export default function App() {
   const isCurrentlyVerified = activeReport
     ? verificationOverride[activeReport.id] !== false && activeReport.verified
     : false;
+
+  const getAvatarColors = (name: string) => {
+    const norm = (name || "").toUpperCase();
+    if (norm.includes("MYKOLA")) {
+      return { bg: "bg-[#eff6ff]", text: "text-[#3b82f6]" };
+    } else if (norm.includes("SERGEY")) {
+      return { bg: "bg-[#ecfdf5]", text: "text-[#10b981]" };
+    } else if (norm.includes("HALIMA")) {
+      return { bg: "bg-[#faf5ff]", text: "text-[#a855f7]" };
+    } else {
+      return { bg: "bg-[#eff6ff]", text: "text-[#3b82f6]" };
+    }
+  };
 
   // Filter passengers in terminal panel
   const filteredReports = reports.filter((r) => {
@@ -335,46 +350,59 @@ export default function App() {
     : "";
 
   return (
-    <div id="medilab-system-root" className="min-h-screen bg-slate-900 text-slate-100 font-sans antialiased overflow-x-hidden flex flex-col">
+    <div id="medilab-system-root" className="min-h-screen bg-[#f8fafc] text-slate-800 font-sans antialiased overflow-x-hidden flex flex-col">
       
       {/* SECURITY TERMINAL TOP BAR (NO-PRINT) */}
-      <header className="no-print bg-slate-950 border-b border-slate-800 shrink-0 relative z-20">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+      <header className="no-print shrink-0 relative z-20 max-w-7xl w-full mx-auto px-4 pt-6">
+        <div className="bg-white border border-[#e2e8f0] p-4 rounded-2xl flex flex-col md:flex-row items-stretch md:items-center justify-between shadow-sm gap-4">
           
           <div className="flex items-center gap-3">
-            <div className="bg-blue-600/20 text-blue-400 p-2 rounded-lg border border-blue-500/30">
-              <Shield className="w-5 h-5 animate-pulse" />
+            <div className="bg-[#2563eb] text-white p-3 rounded-2xl flex items-center justify-center shrink-0">
+              <Shield className="w-6 h-6" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-mono font-semibold tracking-widest text-emerald-400 uppercase">
+                <span className="text-[10px] font-bold tracking-wider text-[#10b981] uppercase">
                   MGQ Airport Gate Health Control
                 </span>
-                <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span className="inline-block w-2 h-2 rounded-full bg-[#10b981] animate-ping"></span>
               </div>
-              <h1 className="font-display text-lg font-bold tracking-tight text-white flex items-center gap-1.5">
-                MEDILAB <span className="text-blue-400 font-medium">Verify Terminal</span>
+              <h1 className="font-display text-2xl font-extrabold tracking-tight text-slate-800">
+                MEDILAB <span className="text-[#2563eb] font-semibold">Verify Terminal</span>
               </h1>
             </div>
           </div>
 
-          {/* Time & Counter Stats */}
-          <div className="flex items-center gap-5 text-xs text-slate-400 font-mono">
-            <div className="hidden md:block border-l border-slate-800 pl-4">
-              <span className="text-slate-500">STATION:</span>{" "}
-              <span className="text-slate-200">WABERI, MOGADISHU-SOMALIA</span>
+          <div className="flex flex-wrap items-center gap-6 text-sm text-slate-600">
+            {/* Station block */}
+            <div className="flex items-center gap-2.5">
+              <div className="bg-slate-100 p-2.5 rounded-full text-[#2563eb]">
+                <MapPin className="w-5 h-5 text-[#2563eb]" />
+              </div>
+              <div>
+                <p className="text-[9px] text-slate-400 uppercase font-extrabold tracking-wider leading-none mb-0.5">Station</p>
+                <p className="text-slate-800 font-bold text-sm leading-tight">Waberi, Mogadishu-Somalia</p>
+              </div>
             </div>
-            <div className="hidden lg:block border-l border-slate-800 pl-4">
-              <span className="text-slate-500">SYSTEM TIME:</span>{" "}
-              <span className="text-blue-400">2026-05-27 23:22:11 UTC</span>
-            </div>
-            <div className="flex items-center gap-2 border-l border-slate-800 pl-4">
-              <span className="text-slate-500">TOTAL DIAL:</span>{" "}
-              <span className="bg-blue-900/40 text-blue-300 px-1.5 py-0.5 rounded border border-blue-800">
-                {verifiedCount}/{totalReportsCount} Verified
-              </span>
+            
+            <div className="hidden md:block h-8 border-l border-slate-200"></div>
+
+            {/* Counter stats block */}
+            <div className="flex items-center gap-2.5">
+              <div className="bg-slate-100 p-2.5 rounded-full text-slate-500">
+                <User className="w-5 h-5 text-slate-500" />
+              </div>
+              <div>
+                <p className="text-[9px] text-slate-400 uppercase font-extrabold tracking-wider leading-none mb-0.5">Total Verified</p>
+                <div className="flex items-center gap-1.5">
+                  <span className="bg-[#eff6ff] text-[#2563eb] font-extrabold text-sm px-3 py-0.5 rounded-full">
+                    {verifiedCount} / {totalReportsCount}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
+
         </div>
       </header>
 
@@ -385,253 +413,279 @@ export default function App() {
         <section id="terminal-control-side" className="no-print lg:col-span-5 xl:col-span-4 flex flex-col gap-6">
           
           {/* SEARCH & QUICK VERIFY CARD */}
-          <div className="bg-slate-950/40 backdrop-blur-md p-5 rounded-2xl border border-slate-800 flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-slate-300 tracking-wide uppercase flex items-center gap-1.5 font-display">
-                <Search className="w-4 h-4 text-blue-400" /> Bukaanka Baar (Verify Passport)
-              </h2>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-2 text-slate-500 text-xs font-semibold uppercase tracking-wider">
+              <span>ðŸ’¼</span>
+              <span>Search Passport</span>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Enter name or passport number"
+                  className="w-full bg-white border border-[#e2e8f0] rounded-xl px-4 py-2.5 pl-11 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-slate-400 transition-all font-sans shadow-sm"
+                />
+                <Search className="absolute left-4 top-3.5 w-4 h-4 text-slate-400" />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-3 top-3 p-0.5 hover:bg-slate-100 rounded-full"
+                  >
+                    <X className="w-3.5 h-3.5 text-slate-400" />
+                  </button>
+                )}
+              </div>
+              
               <button
+                type="button"
                 onClick={resetToFactoryDefault}
-                className="text-[11px] text-slate-500 hover:text-red-400 hover:underline transition-colors flex items-center gap-1 font-mono"
-                title="Reset local changes and restore original Ukrainian Helicopters report"
+                className="bg-white hover:bg-slate-100 border border-[#e2e8f0] px-4 py-2.5 text-[#2563eb] rounded-xl text-xs font-bold transition-colors flex items-center gap-2 shadow-sm shrink-0 cursor-pointer"
+                title="Reset local changes and restore original reports"
               >
-                <RefreshCw className="w-2.5 h-2.5" /> Reload Reset
+                <RefreshCw className="w-3.5 h-3.5 text-[#2563eb]" />
+                <span>Reload</span>
               </button>
             </div>
 
-            <div className="relative">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Fadlan qor Magaca ama Baasaboorka..."
-                className="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-4 py-2.5 pl-10 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500 transition-all font-sans"
-              />
-              <Search className="absolute left-3.5 top-3.5 w-4 h-4 text-slate-500" />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-3 p-0.5 hover:bg-slate-800 rounded-full"
-                >
-                  <X className="w-3.5 h-3.5 text-slate-400" />
-                </button>
-              )}
-            </div>
-
             {/* QUICK PASSENGER SELECTION LIST */}
-            <div className="flex flex-col gap-2 max-h-[170px] overflow-y-auto pr-1">
-              <span className="text-[11px] font-mono text-slate-500">CURRENT CERTIFIED CLEARANCES:</span>
-              <div className="flex flex-col gap-1.5">
-                {filteredReports.map((r) => {
-                  const isCurReport = r.id === activeReport?.id;
-                  const isVerified = verificationOverride[r.id] !== false && r.verified;
-                  return (
-                    <button
-                      key={r.id}
-                      onClick={() => handleSelectReport(r.id)}
-                      className={`text-left text-xs p-2.5 rounded-lg border transition-all flex items-center justify-between ${
-                        isCurReport
-                          ? "bg-blue-950/60 border-blue-500 text-white shadow-md shadow-blue-500/10"
-                          : "bg-slate-900/40 border-slate-800/80 hover:bg-slate-800/60 text-slate-300"
-                      }`}
-                    >
-                      <div className="truncate pr-2">
-                        <div className="font-semibold flex items-center gap-1 truncate text-slate-200">
-                          {r.name}
+            <div className="flex flex-col gap-3">
+              {filteredReports.map((r) => {
+                const isCurReport = r.id === activeReport?.id;
+                const isVerified = verificationOverride[r.id] !== false && r.verified;
+                const initials = r.name
+                  ? r.name.split(" ").filter(Boolean).map((n) => n[0]).join("").slice(0, 2).toUpperCase()
+                  : "PT";
+                const colors = getAvatarColors(r.name);
+                
+                return (
+                  <button
+                    key={r.id}
+                    onClick={() => handleSelectReport(r.id)}
+                    className={`text-left p-4 rounded-xl border transition-all flex items-center justify-between ${
+                      isCurReport
+                        ? "bg-white border-blue-505 shadow-md ring-1 ring-blue-500"
+                        : "bg-white border-[#e2e8f0] hover:bg-slate-50 shadow-sm"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 truncate">
+                      <div className={`w-11 h-11 rounded-full flex items-center justify-center shrink-0 font-bold text-sm ${colors.bg} ${colors.text}`}>
+                        {initials}
+                      </div>
+                      <div className="truncate">
+                        <div className="font-extrabold text-sm text-slate-850 truncate">
+                          {r.name.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ")}
                         </div>
-                        <div className="text-[10px] font-mono text-slate-400 flex items-center gap-1.5 mt-0.5">
+                        <div className="text-xs text-slate-400 flex items-center gap-2 mt-0.5">
                           <span>ID: {r.id}</span>
-                          <span>•</span>
+                          <span>â€¢</span>
                           <span>Passport: {r.passportNo}</span>
                         </div>
                       </div>
-                      
-                      <div className="shrink-0 flex items-center gap-1.5">
-                        {isVerified ? (
-                          <div className="h-2.5 w-2.5 rounded-full bg-emerald-500" title="Verified Authethic" />
-                        ) : (
-                          <div className="h-2.5 w-2.5 rounded-full bg-red-500 animate-ping" title="Failed / Suspended" />
-                        )}
-                        <span className="text-[10px] text-slate-500 font-mono">#{r.id}</span>
-                      </div>
-                    </button>
-                  );
-                })}
-                {filteredReports.length === 0 && (
-                  <div className="text-center py-4 bg-slate-900/30 rounded-lg border border-dashed border-slate-800 text-slate-500 text-xs">
-                    Natiijo lama helin (No match found)
-                  </div>
-                )}
-              </div>
+                    </div>
+                    
+                    <div className="shrink-0 flex items-center gap-3">
+                      {isVerified ? (
+                        <div className="flex items-center gap-1.5 bg-[#ecfdf5] text-[#10b981] text-xs px-2.5 py-1 rounded-full border border-[#a7f3d0] font-bold">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#10b981]"></span>
+                          <span>Verified</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1.5 bg-rose-50 text-rose-600 text-xs px-2.5 py-1 rounded-full border border-rose-200 font-bold">
+                          <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span>
+                          <span>Suspended</span>
+                        </div>
+                      )}
+                      <ChevronRight className="w-4 h-4 text-slate-400" />
+                    </div>
+                  </button>
+                );
+              })}
+              {filteredReports.length === 0 && (
+                <div className="text-center py-6 bg-white rounded-xl border border-dashed border-slate-200 text-slate-400 text-xs">
+                  Natiijo lama helin (No match found)
+                </div>
+              )}
             </div>
           </div>
 
           {/* SCANNER REAL-TIME LINK GENERATOR */}
-          <div className="bg-slate-950/40 backdrop-blur-md p-5 rounded-2xl border border-slate-800 flex flex-col gap-4">
+          <div className="bg-white p-5 rounded-2xl border border-[#e2e8f0] flex flex-col gap-4 shadow-sm">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-slate-300 tracking-wide uppercase flex items-center gap-1.5 font-display">
-                <QrCode className="w-4.5 h-4.5 text-blue-400" /> QR Verification Engine
+              <h2 className="text-sm font-extrabold text-slate-800 tracking-wide uppercase flex items-center gap-2 font-display">
+                <QrCode className="w-5 h-5 text-[#2563eb]" /> QR Verification
               </h2>
-              <span className="text-[9px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/30 uppercase tracking-widest font-mono font-bold">
-                Serverless HTML
-              </span>
+              
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(verificationLink);
+                  alert("Link-ga waa la koobiyey! (Link Copied!)");
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 text-[#2563eb] hover:bg-slate-50 transition-colors text-xs font-semibold rounded-lg shadow-sm cursor-pointer"
+              >
+                <span>ðŸ“‹</span>
+                <span>Copy Link</span>
+              </button>
             </div>
 
-            <p className="text-[11px] text-slate-400 leading-normal">
-              Generates high-resolution official QR codes routing straight to your serverless verification system. It bypasses PHP processing for maximum reliability on Vercel.
-            </p>
-
-            {/* Custom Settings inputs for custom domain */}
-            <div className="flex flex-col gap-2 mt-1 bg-slate-900/40 p-2.5 rounded-xl border border-slate-800/80">
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-[9px] font-mono text-slate-500 uppercase">Production Host URL:</span>
-                  <span className="text-[9px] text-emerald-400 font-mono font-bold">verify.html is automatic</span>
-                </div>
-                <input
-                  type="text"
-                  value={customBaseUrl}
-                  onChange={(e) => setCustomBaseUrl(e.target.value)}
-                  className="bg-slate-950 border border-slate-800 text-slate-200 text-[11px] font-mono px-2 py-1 rounded-lg focus:outline-none focus:border-blue-500 w-full"
-                  placeholder="URL of your production portal"
-                />
-              </div>
-            </div>
-
-            <a
-              href={verificationLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Click to open verification link"
-              className="bg-white p-3.5 rounded-xl self-center shadow-lg border-2 border-slate-300 relative group transition-all duration-300 hover:scale-[1.02] cursor-pointer block"
-            >
-              {activeReport ? (
-                <>
-                  <img
-                    src={qrCodeUrl}
-                    alt="Immigration QR code"
-                    className="w-32 h-32 select-none"
-                    referrerPolicy="no-referrer"
-                  />
-                  {/* Internal logo inside QR code simulation */}
-                  <div className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-white p-1 rounded-md border border-slate-200">
-                    <span className="text-[10px] font-extrabold text-[#0459a8]">MD</span>
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-stretch">
+              {/* Left col: Host URL & QR code */}
+              <div className="md:col-span-5 flex flex-col gap-3">
+                <div>
+                  <p className="text-[10px] font-bold text-slate-400 tracking-wider mb-1 uppercase text-slate-400">Production Host URL</p>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={customBaseUrl}
+                      onChange={(e) => setCustomBaseUrl(e.target.value)}
+                      className="bg-[#f8fafc] border border-[#e2e8f0] text-slate-700 text-xs font-mono px-3 py-2 pr-8 rounded-xl focus:outline-none focus:border-blue-500 w-full"
+                      placeholder="https://mymedilabscom.vercel.app"
+                    />
+                    <span 
+                      className="absolute right-2.5 top-2.5 text-slate-400 cursor-pointer text-xs"
+                      onClick={() => {
+                        navigator.clipboard.writeText(customBaseUrl);
+                        alert("Host base URL copied!");
+                      }}
+                      title="Copy Base URL"
+                    >
+                      ðŸ“‹
+                    </span>
                   </div>
-                </>
-              ) : (
-                <div className="w-32 h-32 flex items-center justify-center text-slate-900 font-mono text-xs">
-                  Generating QR...
                 </div>
-              )}
-            </a>
 
-            <div className="bg-blue-950/35 border border-blue-900/50 p-3 rounded-xl text-xs text-blue-200">
-              <div className="flex items-center justify-between mb-1">
-                <span className="font-semibold text-blue-300">Target Verification Link:</span>
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(verificationLink);
-                    alert("Link-ga waa la koobiyey! (Link Copied!)");
-                  }}
-                  className="text-[10px] bg-blue-900/50 text-blue-300 hover:bg-blue-800 px-1.5 py-0.5 rounded border border-blue-800 cursor-pointer"
-                >
-                  Copy Link
-                </button>
+                <div className="bg-white p-3 border border-slate-200 rounded-2xl shadow-sm w-36 h-36 flex items-center justify-center relative mx-auto select-none mt-1">
+                  {activeReport ? (
+                    <>
+                      <img
+                        src={qrCodeUrl}
+                        alt="Immigration QR code"
+                        className="w-32 h-32 select-none"
+                        referrerPolicy="no-referrer"
+                      />
+                      {/* Internal logo inside QR code simulation */}
+                      <div className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-white p-1.5 rounded-md border border-slate-100 shadow-sm">
+                        <span className="text-[10px] font-extrabold text-[#0459a8]">MD</span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="w-32 h-32 flex items-center justify-center text-slate-950 font-mono text-xs">
+                      Generating QR...
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="font-mono text-[10px] text-emerald-400 break-all bg-slate-950/60 p-1.5 rounded border border-slate-800/80">
-                {verificationLink}
+
+              {/* Right col: Target Verification Link */}
+              <div className="md:col-span-7 flex flex-col justify-start">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Target Verification Link</p>
+                <div className="font-mono text-[11px] text-[#147a46] break-all bg-[#f4fbf7] p-3 rounded-2xl border border-dashed border-[#a7f3d0] flex-1 leading-normal overflow-y-auto max-h-[195px] text-left">
+                  {verificationLink}
+                </div>
               </div>
             </div>
           </div>
 
           {/* ACTION & INTEGRITY DEBUNG CONTROL */}
-          <div className="bg-slate-950/40 backdrop-blur-md p-5 rounded-2xl border border-slate-800 flex flex-col gap-4">
-            <h2 className="text-sm font-semibold text-slate-300 tracking-wide uppercase flex items-center gap-1.5 font-display">
-              <Shield className="w-4 h-4 text-emerald-400" /> Verification Testing Sandbox
+          <div className="bg-white p-5 rounded-2xl border border-[#e2e8f0] flex flex-col gap-4 shadow-sm">
+            <h2 className="text-sm font-extrabold text-slate-800 tracking-wide uppercase flex items-center gap-2 font-display">
+              <ShieldCheck className="w-5 h-5 text-emerald-500" /> Verification Testing Sandbox
             </h2>
             
-            <div className="flex flex-col gap-3">
-              {/* Toggle to mock fail verification */}
-              <div className="bg-slate-900/60 p-3 rounded-xl border border-slate-800/80 flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-slate-200">
-                    Integrity System Status
-                  </span>
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold font-mono ${
-                    isCurrentlyVerified 
-                      ? "bg-emerald-900/30 text-emerald-400 border border-emerald-800" 
-                      : "bg-red-900/30 text-red-400 border border-red-800"
-                  }`}>
-                    {isCurrentlyVerified ? "LEGITIMATE" : "INVALID REPORT"}
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-400 leading-relaxed">
-                  Simulate standard counterfeit report checks by flipping this security switch.
-                </p>
-
-                <div className="mt-2 flex items-center justify-between border-t border-slate-800/80 pt-2">
-                  <span className="text-[11px] text-slate-300">Report Status</span>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={isCurrentlyVerified}
-                      onChange={(e) => {
-                        if (activeReport) {
-                          setVerificationOverride((prev) => ({
-                            ...prev,
-                            [activeReport.id]: e.target.checked
-                          }));
-                        }
-                      }}
-                      className="sr-only peer"
-                    />
-                    <div className="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
-                  </label>
-                </div>
+            <div className="flex flex-col gap-4">
+              {/* Row 1: Integrity Status */}
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                <span className="text-xs font-bold text-slate-700">
+                  Integrity System Status
+                </span>
+                <span className={`text-[11px] px-3 py-1 rounded-full font-extrabold font-mono border ${
+                  isCurrentlyVerified 
+                    ? "bg-[#ecfdf5] text-[#10b981] border-[#a7f3d0]" 
+                    : "bg-rose-50 text-rose-600 border-rose-200"
+                }`}>
+                  {isCurrentlyVerified ? "Legitimate" : "Suspended"}
+                </span>
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex flex-col gap-2">
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    onClick={handleDownloadPDF}
-                    disabled={isExporting}
-                    className="bg-rose-600 hover:bg-rose-500 text-white font-semibold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-rose-600/10 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                    title="Export laboratory report as high-fidelity PDF format"
-                  >
-                    {isExporting ? (
-                      <>
-                        <RefreshCw className="w-3.5 h-3.5 animate-spin" /> Exporting...
-                      </>
-                    ) : (
-                      <>
-                        <FileDown className="w-3.5 h-3.5" /> Export PDF
-                      </>
-                    )}
-                  </button>
-                  <button
-                    onClick={handlePrint}
-                    className="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-blue-500/10 cursor-pointer"
-                    title="Print report using standard print layouts"
-                  >
-                    <Printer className="w-3.5 h-3.5" /> Print Report
-                  </button>
-                </div>
+              {/* Row 2: Report Status toggler */}
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-700">Report Status</span>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={isCurrentlyVerified}
+                    onChange={(e) => {
+                      if (activeReport) {
+                        setVerificationOverride((prev) => ({
+                          ...prev,
+                          [activeReport.id]: e.target.checked
+                        }));
+                      }
+                    }}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+                </label>
+              </div>
+
+              {/* Row 3: Buttons */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 mt-2">
                 <button
-                  onClick={() => setShowCreateModal(true)}
-                  className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-emerald-500/10 cursor-pointer"
+                  type="button"
+                  onClick={handleDownloadPDF}
+                  disabled={isExporting}
+                  className="bg-[#fff1f2] border border-[#fecdd3] text-[#e11d48] hover:bg-[#ffe4e6] font-[#e11d48] font-bold py-3 px-3 rounded-2xl text-xs flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer disabled:opacity-50"
+                  title="Export laboratory report as PDF"
                 >
-                  <Plus className="w-3.5 h-3.5" /> Create New Report
+                  {isExporting ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>Exporting...</span>
+                    </>
+                  ) : (
+                    <>
+                      <FileDown className="w-4 h-4" />
+                      <span>Export PDF</span>
+                    </>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handlePrint}
+                  className="bg-[#eff6ff] border border-[#bfdbfe] text-[#2563eb] hover:bg-[#dbeafe] font-bold py-3 px-3 rounded-2xl text-xs flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer"
+                  title="Print laboratory report"
+                >
+                  <Printer className="w-4 h-4" />
+                  <span>Print Report</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowCreateModal(true)}
+                  className="bg-[#f0fdf4] border border-[#bbf7d0] text-[#16a34a] hover:bg-[#dcfce7] font-bold py-3 px-3 rounded-2xl text-xs flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Create New Report</span>
                 </button>
               </div>
             </div>
           </div>
 
           {/* ADVISORY FOOTNOTE */}
-          <div className="text-[11px] text-slate-500 leading-snug px-2 flex gap-2">
-            <Info className="w-4 h-4 text-slate-600 shrink-0 mt-0.5" />
-            <div>
-              Medilab security checkpoints are located next to Dahabshiil Bank in Mogadishu. For support contact <span className="text-slate-400">m.labsdiagnostic@gmail.com</span>
+          <div className="text-xs text-slate-500 leading-snug px-2 flex flex-col md:flex-row items-start md:items-center justify-between border-t border-slate-200/60 pt-4 mt-2 gap-3">
+            <div className="flex items-center gap-2">
+              <span className="text-sm shrink-0">ðŸ›¡ï¸</span>
+              <span>Security checkpoints are located next to Dahabshiil Bank in Mogadishu.</span>
+            </div>
+            <div className="shrink-0 text-[11px]">
+              <span className="text-slate-400">Support: </span>
+              <a href="mailto:m.labsdiagnostic@gmail.com" className="text-blue-600 font-bold hover:underline">
+                m.labsdiagnostic@gmail.com
+              </a>
             </div>
           </div>
         </section>
@@ -639,19 +693,19 @@ export default function App() {
         {/* RIGHT PANEL: LIVE REPORT VIEW RENDERER (RESPONSIVE VIEW) */}
         <section id="report-view-canvas" className="lg:col-span-7 xl:col-span-8 flex flex-col gap-4">
           
-          <div className="no-print hidden lg:flex items-center justify-between text-slate-400 text-xs px-2 select-none">
-            <span className="flex items-center gap-1 font-mono">
-              <Eye className="w-3.5 h-3.5 text-blue-500" /> LIVE CERTIFICATE STAGE
+          <div className="no-print hidden lg:flex items-center justify-between text-slate-500 text-xs px-2 select-none">
+            <span className="flex items-center gap-1 font-mono font-bold">
+              <Eye className="w-3.5 h-3.5 text-blue-600" /> LIVE CERTIFICATE STAGE
             </span>
-            <span className="bg-slate-800 text-slate-300 px-2 py-0.5 rounded text-[10px]">
+            <span className="bg-slate-200 text-slate-600 px-2 py-0.5 rounded text-[10px] font-bold">
               A4 Border Safe Margin Scale
             </span>
           </div>
 
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-1 md:p-4 lg:p-6 transition-all shadow-xl shadow-slate-950/40 print:bg-white print:border-none print:shadow-none print:p-0">
+          <div className="bg-white border border-[#e2e8f0] rounded-3xl p-1 md:p-4 lg:p-6 transition-all shadow-sm print:bg-white print:border-none print:shadow-none print:p-0">
             
             {/* STAGE CONTAINER WITH LIGHT BACKGROUND FOR AUTHENTIC LAB SHEET LOOK */}
-            <div className="print-container bg-[#dfe1e6] p-2 sm:p-4 md:p-6 rounded-2xl text-slate-900 relative shadow-inner overflow-hidden print:bg-white print:p-0 print:text-black">
+            <div className="print-container bg-[#f1f5f9] p-2 sm:p-4 md:p-6 rounded-2xl text-slate-900 relative shadow-inner overflow-hidden print:bg-white print:p-0 print:text-black">
               
               {/* OVERLAY DIAGONAL STATS IF UNVERIFIED COUBNTERFEIT WARNING */}
               <AnimatePresence>
@@ -664,7 +718,7 @@ export default function App() {
                   >
                     {/* diagonal red banner watermark */}
                     <div className="absolute transform -rotate-25 bg-red-600/15 border-y-4 border-red-500/40 text-red-600/70 py-4 px-12 text-center select-none w-[120%] font-black tracking-widest text-[22px] md:text-[36px] uppercase">
-                      INVALID DOCUMENT • DIGNIIN REPORT FAUX
+                      INVALID DOCUMENT â€¢ DIGNIIN REPORT FAUX
                     </div>
                   </motion.div>
                 )}
@@ -1061,7 +1115,7 @@ export default function App() {
                       >
                         {/* diagonal red banner watermark */}
                         <div className="absolute transform -rotate-25 bg-red-600/15 border-y-4 border-red-500/40 text-red-600/70 py-4 px-12 text-center select-none w-[120%] font-black tracking-widest text-[22px] md:text-[36px] uppercase">
-                          INVALID DOCUMENT • DIGNIIN REPORT FAUX
+                          INVALID DOCUMENT â€¢ DIGNIIN REPORT FAUX
                         </div>
                       </motion.div>
                     )}
@@ -1080,7 +1134,7 @@ export default function App() {
                       <div>
                         <div className="lab-name">MEDILAB DIEGNOSTIC</div>
                         <div className="lab-address">Address: AdenAdde InternationalAirport,NextTo Dahabshiil Bank, Waberi, Mogadishu-Somalia</div>
-                        <div className="lab-tel">Tel: +252 613523011 • Email: m.labsdiagnostic@gmail.com</div>
+                        <div className="lab-tel">Tel: +252 613523011 â€¢ Email: m.labsdiagnostic@gmail.com</div>
                       </div>
                     </div>
                     <div className="meta-info">
@@ -1093,7 +1147,7 @@ export default function App() {
                   {/* DYNAMIC INTEGRITY ALERT WARNING */}
                   {!isCurrentlyVerified && (
                     <div style={{ marginBottom: "15px", padding: "10px", background: "#fdf2f2", borderLeft: "4px solid #f05252", borderRadius: "4px", color: "#9b1c1c", fontSize: "12px", textAlign: "left" }}>
-                      <strong style={{ display: "block", textTransform: "uppercase", marginBottom: "2px" }}>⚠️ INVALID DOCUMENT / SYSTEM COUBNTERFEIT WARNING</strong>
+                      <strong style={{ display: "block", textTransform: "uppercase", marginBottom: "2px" }}>âš ï¸ INVALID DOCUMENT / SYSTEM COUBNTERFEIT WARNING</strong>
                       This report has been marked as suspended or simulated and does not match central health registry logs.
                     </div>
                   )}
@@ -1253,7 +1307,7 @@ export default function App() {
       {/* FOOTER ADVISORY BANNER - NO-PRINT */}
       <footer className="no-print mt-auto bg-slate-950 border-t border-slate-800 py-4 text-center text-xs text-slate-400">
         <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-3">
-          <p>© 2026 Medilab Diagnostic Center. Designed & Verified by Daryeel Tech IT Team.</p>
+          <p>Â© 2026 Medilab Diagnostic Center. Designed & Verified by Daryeel Tech IT Team.</p>
           <div className="flex items-center gap-2">
             <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></span>
             <span className="font-mono text-[11px] text-slate-500">
