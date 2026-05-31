@@ -865,7 +865,7 @@ export default function App() {
                     margin-bottom: 0;
                   }
                   .container-sheet .label {
-                    width: 130px;
+                    width: 110px;
                     color: #4b5563;
                     font-weight: 500;
                     flex-shrink: 0;
@@ -979,7 +979,7 @@ export default function App() {
                   @media print {
                     @page {
                       size: A4 portrait;
-                      margin: 10mm 12mm !important;
+                      margin: 5mm 5mm 5mm 5mm !important;
                     }
                     * {
                       -webkit-print-color-adjust: exact !important;
@@ -992,6 +992,7 @@ export default function App() {
                       height: auto !important;
                     }
                     /* Ensure parents do not affect print sizing */
+                    #root,
                     #medilab-system-root, 
                     main, 
                     #report-view-canvas, 
@@ -1007,8 +1008,10 @@ export default function App() {
                       max-width: 100% !important;
                       width: 100% !important;
                       min-height: auto !important;
+                      height: auto !important;
                       display: block !important;
                       position: static !important;
+                      overflow: visible !important;
                     }
                     /* Explicitly suppress any no-print items even if they are child divs */
                     #report-view-canvas > div.no-print,
@@ -1030,7 +1033,7 @@ export default function App() {
                       width: 100% !important;
                       max-width: 100% !important;
                       min-height: auto !important;
-                      padding: 35px 35px !important;
+                      padding: 16px 20px !important;
                       margin: 0 auto !important;
                       border: none !important;
                       border-radius: 0 !important;
@@ -1043,8 +1046,42 @@ export default function App() {
                     }
                     .container-sheet .header {
                       border-bottom: 2px solid #e2e8f0 !important;
+                      padding-bottom: 8px !important;
+                      margin-bottom: 12px !important;
+                    }
+                    .container-sheet .logo-container {
+                      width: 55px !important;
+                      height: 55px !important;
+                    }
+                    .container-sheet .logo {
+                      width: 55px !important;
+                      height: 55px !important;
+                    }
+                    .container-sheet .lab-name {
+                      font-size: 18px !important;
+                    }
+                    .container-sheet .lab-address,
+                    .container-sheet .lab-tel {
+                      font-size: 10px !important;
+                    }
+                    .container-sheet .meta-info {
+                      font-size: 11px !important;
+                    }
+                    .container-sheet .info-grid {
+                      gap: 10px !important;
+                      margin-bottom: 14px !important;
+                    }
+                    .container-sheet .box {
+                      border: 1px solid #e2e8f0 !important;
+                      background: #fff !important;
+                      padding: 10px 14px !important;
+                      border-radius: 12px !important;
+                    }
+                    .container-sheet .row {
+                      margin-bottom: 4px !important;
                     }
                     .container-sheet .label {
+                      width: 110px !important;
                       color: #4b5563 !important;
                       font-weight: 500 !important;
                     }
@@ -1052,92 +1089,68 @@ export default function App() {
                       color: #000000 !important;
                       font-weight: 700 !important;
                     }
-                    .container-sheet .box {
-                      border: 1px solid #e2e8f0 !important;
-                      background: #fff !important;
-                      padding: 16px 20px !important;
-                      border-radius: 12px !important;
-                    }
-                    .container-sheet .box h3 {
-                      color: #155a79 !important;
-                      font-weight: 400 !important;
-                      border-bottom: none !important;
-                    }
                     .container-sheet .section-title {
                       color: #155a79 !important;
                       font-weight: 700 !important;
+                      margin-bottom: 6px !important;
                     }
                     .container-sheet .results-table {
-                      margin-bottom: 25px !important;
+                      margin-bottom: 14px !important;
                     }
                     .container-sheet .results-table th {
                       color: #155a79 !important;
                       border-bottom: 1.5px solid #cbd5e1 !important;
                       font-weight: 400 !important;
+                      padding: 4px 6px !important;
+                      font-size: 11px !important;
                     }
                     .container-sheet .results-table td {
                       border-bottom: 1px solid #f1f5f9 !important;
                       color: #000000 !important;
                       font-weight: 400 !important;
+                      padding: 4px 6px !important;
+                      font-size: 11px !important;
                     }
                     .container-sheet .results-table tr.category td {
                       color: #155a79 !important;
                       font-weight: 400 !important;
+                      padding: 8px 6px 4px 6px !important;
+                      font-size: 11.5px !important;
                     }
                     .container-sheet .sig-section {
-                      margin-top: 25px !important;
-                      padding-top: 20px !important;
+                      margin-top: 14px !important;
+                      padding-top: 10px !important;
                       border-top: 1.5px dashed #cbd5e1 !important;
                     }
                     .container-sheet .sig-box {
                       color: #374151 !important;
+                      font-size: 11px !important;
+                    }
+                    .container-sheet .sig-box img {
+                      height: 55px !important;
+                      width: auto !important;
+                      margin-top: 8px !important;
                     }
                     .container-sheet .footer {
-                      margin-top: 25px !important;
-                      padding-top: 12px !important;
+                      margin-top: 14px !important;
+                      padding-top: 8px !important;
                       border-top: 1.5px solid #e2e8f0 !important;
                       color: #4b5563 !important;
                       display: flex !important;
                       justify-content: space-between !important;
                       align-items: center !important;
-                    }
-                    .container-sheet .footer-credit {
-                      display: inline-block !important;
-                      vertical-align: middle !important;
-                      white-space: nowrap !important;
-                    }
-                    .container-sheet .footer-credit-logo {
-                      border: 1px dashed #cbd5e1 !important;
-                      width: 18px !important;
-                      height: 18px !important;
-                      font-size: 8px !important;
-                      font-weight: 700 !important;
-                      border-radius: 3px !important;
-                      background: #fff !important;
-                      color: #4b5563 !important;
-                      display: inline-block !important;
-                      vertical-align: middle !important;
-                      text-align: center !important;
-                      line-height: 16px !important;
-                      box-sizing: border-box !important;
-                      margin-right: 6px !important;
-                      padding: 0 !important;
-                      position: relative !important;
-                      top: 1.5px !important;
-                    }
-                    .container-sheet .footer-credit-text {
-                      font-size: 11px !important;
-                      color: #4b5563 !important;
-                      display: inline-block !important;
-                      vertical-align: middle !important;
-                      line-height: 18px !important;
+                      font-size: 10px !important;
                     }
                     .container-sheet .qr-section {
-                      margin-top: 25px !important;
+                      margin-top: 12px !important;
                     }
                     .container-sheet .qr-section img {
-                      width: 80px !important;
-                      height: 80px !important;
+                      width: 64px !important;
+                      height: 64px !important;
+                    }
+                    .container-sheet .qr-section div {
+                      font-size: 9px !important;
+                      margin-top: 4px !important;
                     }
                     .container-sheet .meta-row {
                       margin-bottom: 4px !important;

@@ -27,7 +27,7 @@
   }
 
   /* Reset layout constraints from standard UI to prevent double pagination */
-  #medilab-system-root, main, #report-view-canvas, .bg-slate-900 {
+  #root, #medilab-system-root, main, #report-view-canvas, .bg-slate-900 {
     display: block !important;
     background: white !important;
     color: black !important;
@@ -38,6 +38,10 @@
     width: 100% !important;
     max-width: 100% !important;
     position: static !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
   }
 
   .no-print {
