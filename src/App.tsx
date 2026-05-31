@@ -569,7 +569,7 @@ export default function App() {
           {/* SEARCH & QUICK VERIFY CARD */}
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2 text-slate-500 text-xs font-semibold uppercase tracking-wider">
-              <span>🧑‍⚕️</span>
+              <Stethoscope className="w-4 h-4 text-slate-500 shrink-0" />
               <span>Search Patients</span>
             </div>
             
@@ -644,7 +644,7 @@ export default function App() {
                         </div>
                         <div className="text-xs text-slate-400 flex items-center gap-2 mt-0.5">
                           <span>ID: {r.id}</span>
-                          <span>•</span>
+                          <span className="text-slate-300">-</span>
                           <span>Passport: {r.passportNo}</span>
                         </div>
                       </div>
@@ -740,7 +740,7 @@ export default function App() {
                   >
                     {/* diagonal red banner watermark */}
                     <div className="absolute transform -rotate-25 bg-red-600/15 border-y-4 border-red-500/40 text-red-600/70 py-4 px-12 text-center select-none w-[120%] font-black tracking-widest text-[22px] md:text-[36px] uppercase">
-                      INVALID DOCUMENT • DIGNIIN REPORT FAUX
+                      INVALID DOCUMENT - DIGNIIN REPORT FAUX
                     </div>
                   </motion.div>
                 )}
@@ -1017,7 +1017,7 @@ export default function App() {
                       >
                         {/* diagonal red banner watermark */}
                         <div className="absolute transform -rotate-25 bg-red-600/15 border-y-4 border-red-500/40 text-red-600/70 py-4 px-12 text-center select-none w-[120%] font-black tracking-widest text-[22px] md:text-[36px] uppercase">
-                          INVALID DOCUMENT • DIGNIIN REPORT FAUX
+                          INVALID DOCUMENT - DIGNIIN REPORT FAUX
                         </div>
                       </motion.div>
                     )}
@@ -1036,7 +1036,7 @@ export default function App() {
                       <div>
                         <div className="lab-name">MEDILAB DIEGNOSTIC</div>
                         <div className="lab-address">Address: AdenAdde InternationalAirport,NextTo Dahabshiil Bank, Waberi, Mogadishu-Somalia</div>
-                        <div className="lab-tel">Tel: +252 613523011 • Email: m.labsdiagnostic@gmail.com</div>
+                        <div className="lab-tel">Tel: +252 613523011 | Email: m.labsdiagnostic@gmail.com</div>
                       </div>
                     </div>
                     <div className="meta-info">
@@ -1229,7 +1229,7 @@ export default function App() {
                     <div className="w-[70%] h-[3px] bg-[#1b9bc5] mx-auto mb-2.5 rounded"></div>
                     <div className="text-slate-700 text-xs md:text-sm leading-relaxed font-normal">
                       <strong>Address:</strong> Aden Adde International Airport, Next To Dahabshiil Bank, Waberi, Mogadishu-Somalia<br />
-                      <strong>Tel:</strong> +252 613523011 &nbsp;&nbsp;•&nbsp;&nbsp; <strong>Email:</strong> m.labsdiagnostic@gmail.com
+                      <strong>Tel:</strong> +252 613523011 &nbsp;&nbsp;|&nbsp;&nbsp; <strong>Email:</strong> m.labsdiagnostic@gmail.com
                     </div>
                   </div>
                   <img 
@@ -1430,7 +1430,7 @@ export default function App() {
 
                 {/* Footer Section */}
                 <div className="border-t-[3px] border-[#1b84d6] pt-4 pb-2 text-center text-xs text-slate-500 font-semibold leading-relaxed">
-                  © 2026 Medilab Diagnostic Center — All rights reserved.<br />
+                  © 2026 Medilab Diagnostic Center - All rights reserved.<br />
                   Designed & Verified by Daryeel Tech IT Team
                 </div>
 
