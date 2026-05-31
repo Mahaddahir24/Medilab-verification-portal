@@ -349,6 +349,54 @@ export default function App() {
     });
   };
 
+  const handleInlineEdit = (field: string, val: string) => {
+    if (!activeReport) return;
+    const cleanVal = val.trim();
+    setReports((prev) =>
+      prev.map((r) => {
+        if (r.id === activeReport.id) {
+          const updated = { ...r };
+          if (field === "id") {
+            updated.id = cleanVal;
+            setSelectedReportId(cleanVal);
+          } else if (field === "name") {
+            updated.name = cleanVal.toUpperCase();
+          } else if (field === "age") {
+            updated.age = Number(cleanVal) || r.age;
+          } else if (field === "gender") {
+            updated.gender = cleanVal as any;
+          } else if (field === "company") {
+            updated.company = cleanVal;
+          } else if (field === "passport") {
+            updated.passportNo = cleanVal;
+          } else if (field === "phone") {
+            updated.phone = cleanVal;
+          } else if (field === "doctor") {
+            updated.doctor = cleanVal;
+          } else if (field === "date") {
+            updated.resultDate = cleanVal;
+          } else if (field === "hcv" || field === "hepb" || field === "hiv" || field === "tpha") {
+            const testNameMap: Record<string, string> = {
+              hcv: "HCV",
+              hepb: "Hepatitis B Surface Antigen",
+              hiv: "HIV Test",
+              tpha: "TPHA"
+            };
+            const targetName = testNameMap[field];
+            updated.tests = r.tests.map((t) => {
+              if (t.name.toLowerCase().includes(targetName.toLowerCase()) || t.name === targetName) {
+                return { ...t, result: cleanVal as any };
+              }
+              return t;
+            });
+          }
+          return updated;
+        }
+        return r;
+      })
+    );
+  };
+
   // Helper to extract test results or default to Negative as required
   const getTestResultVal = (report: PatientReport, nameKey: string): string => {
     if (!report || !report.tests) return "Negative";
@@ -469,47 +517,17 @@ export default function App() {
       
       {/* SECURITY TERMINAL TOP BAR (NO-PRINT) */}
       <header className="no-print shrink-0 relative z-20 max-w-7xl w-full mx-auto px-4 pt-6">
-        <div className="bg-white border border-[#e2e8f0] p-4 rounded-2xl flex flex-col md:flex-row items-stretch md:items-center justify-between shadow-sm gap-4">
-          
-          <div className="flex items-center gap-3">
-            <img 
-              src="https://i.postimg.cc/0QTbCSdT/Lapverication.png" 
-              className="h-24 md:h-28 w-auto object-contain" 
-              alt="Lab Verification Report Logo" 
-              referrerPolicy="no-referrer"
-            />
-          </div>
-
-          <div className="flex flex-wrap items-center gap-6 text-sm text-slate-600">
-            {/* Station block */}
-            <div className="flex items-center gap-2.5">
-              <div className="bg-slate-100 p-2.5 rounded-full text-[#2563eb]">
-                <MapPin className="w-5 h-5 text-[#2563eb]" />
-              </div>
-              <div>
-                <p className="text-[9px] text-slate-400 uppercase font-extrabold tracking-wider leading-none mb-0.5">Station</p>
-                <p className="text-slate-800 font-bold text-sm leading-tight">Global</p>
-              </div>
-            </div>
-            
-            <div className="hidden md:block h-8 border-l border-slate-200"></div>
-
-            {/* Counter stats block */}
-            <div className="flex items-center gap-2.5">
-              <div className="bg-slate-100 p-2.5 rounded-full text-slate-500">
-                <User className="w-5 h-5 text-slate-500" />
-              </div>
-              <div>
-                <p className="text-[9px] text-slate-400 uppercase font-extrabold tracking-wider leading-none mb-0.5">Total Verified</p>
-                <div className="flex items-center gap-1.5">
-                  <span className="bg-[#eff6ff] text-[#2563eb] font-extrabold text-sm px-3 py-0.5 rounded-full">
-                    {verifiedCount} / {totalReportsCount}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
+        <div 
+          className="relative bg-[#f4f5f2] border border-slate-200/70 rounded-2xl shadow-md min-h-[120px] md:min-h-[160px]"
+          style={{ 
+            backgroundImage: "url('https://i.postimg.cc/4xrWCL5B/Labverication.png')", 
+            backgroundPosition: 'center', 
+            backgroundRepeat: 'no-repeat', 
+            backgroundSize: 'contain',
+            backgroundColor: '#f4f5f2'
+          }}
+        >
+          {/* Logo is positioned perfectly inside the container using contain sizing */}
         </div>
       </header>
 
@@ -518,6 +536,35 @@ export default function App() {
         
         {/* LEFT PANEL: ADMINISTRATION & SEARCH (NO-PRINT) */}
         <section id="terminal-control-side" className="no-print lg:col-span-5 xl:col-span-4 flex flex-col gap-6">
+          
+          {/* STATION & VERIFICATION DETAILS (LEFT & RIGHT) */}
+          <div className="flex items-center justify-between bg-white border border-slate-200/60 p-4 rounded-2xl shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="bg-blue-50 p-2 rounded-xl text-[#2563eb]">
+                <MapPin className="w-4 h-4 text-[#2563eb]" />
+              </div>
+              <div>
+                <p className="text-[9px] text-slate-400 uppercase font-extrabold tracking-wider leading-none mb-0.5">Station</p>
+                <p className="text-slate-800 font-black text-sm leading-tight">Global</p>
+              </div>
+            </div>
+
+            <div className="h-8 border-l border-slate-100"></div>
+
+            <div className="flex items-center gap-3">
+              <div className="bg-emerald-50 p-2 rounded-xl text-emerald-600">
+                <User className="w-4 h-4 text-emerald-600" />
+              </div>
+              <div>
+                <p className="text-[9px] text-slate-400 uppercase font-extrabold tracking-wider leading-none mb-0.5">Total Verified</p>
+                <div className="flex items-center gap-1.5">
+                  <span className="bg-emerald-50 text-[#16a34a] font-black text-sm px-2.5 py-0.5 rounded-lg border border-emerald-100">
+                    {verifiedCount} / {totalReportsCount}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
           
           {/* SEARCH & QUICK VERIFY CARD */}
           <div className="flex flex-col gap-4">
@@ -649,53 +696,19 @@ export default function App() {
                 </div>
               )}
             </div>
-          </div>
 
-
-
-          {/* ACTION & INTEGRITY DEBUNG CONTROL */}
-          <div className="bg-white p-5 rounded-2xl border border-[#e2e8f0] flex flex-col gap-4 shadow-sm">
-            <h2 className="text-sm font-extrabold text-slate-800 tracking-wide uppercase flex items-center gap-2 font-display">
-              <ShieldCheck className="w-5 h-5 text-emerald-500" /> Verification Control
-            </h2>
-            
-            <div className="flex flex-col gap-4">
-              {/* Row 1: Integrity Status */}
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                <span className="text-xs font-bold text-slate-700">
-                  Integrity System Status
-                </span>
-                <span className={`text-[11px] px-3 py-1 rounded-full font-extrabold font-mono border ${
-                  isCurrentlyVerified 
-                    ? "bg-[#ecfdf5] text-[#10b981] border-[#a7f3d0]" 
-                    : "bg-rose-50 text-rose-600 border-rose-200"
-                }`}>
-                  {isCurrentlyVerified ? "Legitimate" : "Suspended"}
-                </span>
-              </div>
-
-              {/* Row 2: Report Status toggler */}
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-700">Report Status</span>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={isCurrentlyVerified}
-                    onChange={(e) => {
-                      if (activeReport) {
-                        setVerificationOverride((prev) => ({
-                          ...prev,
-                          [activeReport.id]: e.target.checked
-                        }));
-                      }
-                    }}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
-                </label>
-              </div>
+            {/* View Report Indicator below the patient list */}
+            <div className="text-center py-2 mt-4">
+              <span className="text-xs font-extrabold text-slate-500 uppercase tracking-widest bg-slate-100 border border-slate-200/60 px-4 py-2.5 rounded-xl inline-flex items-center gap-2 shadow-sm">
+                <Eye className="w-3.5 h-3.5 text-[#2563eb]" />
+                View Report
+              </span>
             </div>
           </div>
+
+
+
+
 
         </section>
 
@@ -997,10 +1010,25 @@ export default function App() {
                       display: block !important;
                       position: static !important;
                     }
+                    /* Explicitly suppress any no-print items even if they are child divs */
+                    #report-view-canvas > div.no-print,
+                    .no-print,
+                    .no-print * {
+                      display: none !important;
+                      height: 0 !important;
+                      min-height: 0 !important;
+                      max-height: 0 !important;
+                      padding: 0 !important;
+                      margin: 0 !important;
+                      border: none !important;
+                      overflow: hidden !important;
+                      opacity: 0 !important;
+                      visibility: hidden !important;
+                    }
                     .container-sheet {
                       display: block !important;
-                      width: 800px !important;
-                      max-width: 800px !important;
+                      width: 100% !important;
+                      max-width: 100% !important;
                       min-height: auto !important;
                       padding: 35px 35px !important;
                       margin: 0 auto !important;
@@ -1333,6 +1361,241 @@ export default function App() {
             </div>
           </div>
 
+          {/* VERIFY PAGE PREVIEW SEAMLESS INTEGRATION (NO-PRINT) */}
+          <div className="no-print mt-8 mb-6">
+            <div className="text-center mb-4 text-slate-600 text-sm font-bold uppercase tracking-wider">
+              <span>view verification result</span>
+            </div>
+
+            <div className="w-full bg-[#dfe1e6] rounded-2xl p-3 md:p-6 shadow-md border border-slate-300 select-text">
+              <div className="max-w-[1000px] mx-auto flex flex-col gap-6 text-left" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
+                
+                {/* Header */}
+                <div 
+                  className="bg-white rounded-xl p-5 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm"
+                  style={{ background: "linear-gradient(90deg, #eaf2fd 0%, #ffffff 100%)" }}
+                >
+                  <img 
+                    src="https://i.postimg.cc/mk4PXqw2/logo1.png" 
+                    className="w-[100px] h-[100px] object-contain shrink-0" 
+                    alt="medilab logo 1" 
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="text-center flex-1 px-4">
+                    <h1 className="text-[#0459a8] text-xl md:text-2xl font-black mb-1">MEDILAB DIAGNOSTIC CENTER</h1>
+                    <p className="text-slate-600 font-semibold text-sm md:text-base mb-2">Official Laboratory Verification Report</p>
+                    <div className="w-[70%] h-[3px] bg-[#1b9bc5] mx-auto mb-2.5 rounded"></div>
+                    <div className="text-slate-700 text-xs md:text-sm leading-relaxed font-normal">
+                      <strong>Address:</strong> Aden Adde International Airport, Next To Dahabshiil Bank, Waberi, Mogadishu-Somalia<br />
+                      <strong>Tel:</strong> +252 613523011 &nbsp;&nbsp;•&nbsp;&nbsp; <strong>Email:</strong> m.labsdiagnostic@gmail.com
+                    </div>
+                  </div>
+                  <img 
+                    src="https://i.postimg.cc/5NN0X8KB/logo2.png" 
+                    className="w-[100px] h-[100px] object-contain shrink-0" 
+                    alt="medilab logo 2" 
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
+
+                {/* Patient verification card */}
+                <div className="bg-[#f7f7f7] rounded-xl border-l-[5px] border-[#3cb54a] p-6 shadow-sm flex flex-col gap-4">
+                  <div className="text-[#3d7f36] text-lg md:text-xl font-bold flex items-center gap-2">
+                    <span>✅ Patient waa sax wuxuuna ka yimid Medilab Diagnostic System</span>
+                  </div>
+                  <div className="text-[#555] text-sm font-semibold border-b border-slate-200/50 pb-2">
+                    ✔ This report is authentic and verified by Medilab Diagnostic.
+                  </div>
+                  <div className="text-slate-800 text-sm md:text-base leading-loose grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                    <div>
+                      <strong>Patient ID:</strong>{" "}
+                      <span 
+                        className="edit-field border-b border-dashed border-slate-300 hover:border-blue-500 focus:outline-none focus:bg-white px-1 font-bold cursor-text inline-block transition-colors min-w-[30px]"
+                        contentEditable={true}
+                        suppressContentEditableWarning={true}
+                        onBlur={(e) => handleInlineEdit("id", e.currentTarget.innerText)}
+                      >
+                        {activeReport?.id || "1876"}
+                      </span>
+                    </div>
+                    <div>
+                      <strong>Patient Name:</strong>{" "}
+                      <span 
+                        className="edit-field border-b border-dashed border-slate-300 hover:border-blue-500 focus:outline-none focus:bg-white px-1 font-bold cursor-text inline-block transition-colors min-w-[80px]"
+                        contentEditable={true}
+                        suppressContentEditableWarning={true}
+                        onBlur={(e) => handleInlineEdit("name", e.currentTarget.innerText)}
+                      >
+                        {activeReport?.name || "MYKOLA VORONA"}
+                      </span>
+                    </div>
+                    <div>
+                      <strong>Age:</strong>{" "}
+                      <span 
+                        className="edit-field border-b border-dashed border-slate-300 hover:border-blue-500 focus:outline-none focus:bg-white px-1 font-bold cursor-text inline-block transition-colors min-w-[20px]"
+                        contentEditable={true}
+                        suppressContentEditableWarning={true}
+                        onBlur={(e) => handleInlineEdit("age", e.currentTarget.innerText)}
+                      >
+                        {activeReport?.age || "44"}
+                      </span>{" "}
+                      | <strong>Gender:</strong>{" "}
+                      <span 
+                        className="edit-field border-b border-dashed border-slate-300 hover:border-blue-500 focus:outline-none focus:bg-white px-1 font-bold cursor-text inline-block transition-colors min-w-[40px]"
+                        contentEditable={true}
+                        suppressContentEditableWarning={true}
+                        onBlur={(e) => handleInlineEdit("gender", e.currentTarget.innerText)}
+                      >
+                        {activeReport?.gender || "Male"}
+                      </span>
+                    </div>
+                    <div>
+                      <strong>Company:</strong>{" "}
+                      <span 
+                        className="edit-field border-b border-dashed border-slate-300 hover:border-blue-500 focus:outline-none focus:bg-white px-1 font-bold cursor-text inline-block transition-colors min-w-[100px]"
+                        contentEditable={true}
+                        suppressContentEditableWarning={true}
+                        onBlur={(e) => handleInlineEdit("company", e.currentTarget.innerText)}
+                      >
+                        {activeReport?.company || "UKRANIAN HELICOPTERS"}
+                      </span>
+                    </div>
+                    <div>
+                      <strong>Passport No:</strong>{" "}
+                      <span 
+                        className="edit-field border-b border-dashed border-slate-300 hover:border-blue-500 focus:outline-none focus:bg-white px-1 font-bold cursor-text inline-block transition-colors min-w-[70px]"
+                        contentEditable={true}
+                        suppressContentEditableWarning={true}
+                        onBlur={(e) => handleInlineEdit("passport", e.currentTarget.innerText)}
+                      >
+                        {activeReport?.passportNo || "FS879183"}
+                      </span>
+                    </div>
+                    <div>
+                      <strong>Phone:</strong>{" "}
+                      <span 
+                        className="edit-field border-b border-dashed border-slate-300 hover:border-blue-500 focus:outline-none focus:bg-white px-1 font-bold cursor-text inline-block transition-colors min-w-[50px]"
+                        contentEditable={true}
+                        suppressContentEditableWarning={true}
+                        onBlur={(e) => handleInlineEdit("phone", e.currentTarget.innerText)}
+                      >
+                        {activeReport?.phone || "839180"}
+                      </span>
+                    </div>
+                    <div>
+                      <strong>Doctor:</strong>{" "}
+                      <span 
+                        className="edit-field border-b border-dashed border-slate-300 hover:border-blue-500 focus:outline-none focus:bg-white px-1 font-bold cursor-text inline-block transition-colors min-w-[100px]"
+                        contentEditable={true}
+                        suppressContentEditableWarning={true}
+                        onBlur={(e) => handleInlineEdit("doctor", e.currentTarget.innerText)}
+                      >
+                        {activeReport?.doctor || "sadam adan Ahmed"}
+                      </span>
+                    </div>
+                    <div>
+                      <strong>Result Date:</strong>{" "}
+                      <span 
+                        className="edit-field border-b border-dashed border-slate-300 hover:border-blue-500 focus:outline-none focus:bg-white px-1 font-bold cursor-text inline-block transition-colors min-w-[75px]"
+                        contentEditable={true}
+                        suppressContentEditableWarning={true}
+                        onBlur={(e) => handleInlineEdit("date", e.currentTarget.innerText)}
+                      >
+                        {activeReport?.resultDate || "2026-05-24"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Immunology Section & Table */}
+                <div>
+                  <div className="bg-[#0075f2] text-white py-2.5 px-4 rounded-t-lg font-bold text-sm md:text-base">
+                    Immunology
+                  </div>
+                  <table className="w-full bg-[#f7f7f7] rounded-b-lg border-collapse border border-slate-300 overflow-hidden shadow-sm">
+                    <thead>
+                      <tr className="bg-[#eceff1] text-slate-700">
+                        <th className="border border-slate-300 text-left p-3 text-xs md:text-sm font-bold">Test</th>
+                        <th className="border border-slate-300 text-left p-3 text-xs md:text-sm font-bold">Result</th>
+                        <th className="border border-slate-300 text-left p-3 text-xs md:text-sm font-bold">Unit</th>
+                        <th className="border border-slate-300 text-left p-3 text-xs md:text-sm font-bold">Remark</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="text-slate-800 text-xs md:text-sm">
+                        <td className="border border-slate-200 p-3">HCV</td>
+                        <td className="border border-slate-200 p-3 text-slate-800">
+                          <span 
+                            className="edit-field border-b border-dashed border-slate-300 hover:border-blue-500 focus:outline-none focus:bg-white px-1 cursor-text"
+                            contentEditable={true}
+                            suppressContentEditableWarning={true}
+                            onBlur={(e) => handleInlineEdit("hcv", e.currentTarget.innerText)}
+                          >
+                            {hcvVal}
+                          </span>
+                        </td>
+                        <td className="border border-slate-200 p-3 text-slate-500">test</td>
+                        <td className="border border-slate-200 p-3 text-slate-500"></td>
+                      </tr>
+                      <tr className="text-slate-800 text-xs md:text-sm">
+                        <td className="border border-slate-200 p-3">Hepatitis B Surface Antigen</td>
+                        <td className="border border-slate-200 p-3 text-slate-800">
+                          <span 
+                            className="edit-field border-b border-dashed border-slate-300 hover:border-blue-500 focus:outline-none focus:bg-white px-1 cursor-text"
+                            contentEditable={true}
+                            suppressContentEditableWarning={true}
+                            onBlur={(e) => handleInlineEdit("hepb", e.currentTarget.innerText)}
+                          >
+                            {hepBVal}
+                          </span>
+                        </td>
+                        <td className="border border-slate-200 p-3 text-slate-500">test</td>
+                        <td className="border border-slate-200 p-3 text-slate-500"></td>
+                      </tr>
+                      <tr className="text-slate-800 text-xs md:text-sm">
+                        <td className="border border-slate-200 p-3">HIV Test</td>
+                        <td className="border border-slate-200 p-3 text-slate-800">
+                          <span 
+                            className="edit-field border-b border-dashed border-slate-300 hover:border-blue-500 focus:outline-none focus:bg-white px-1 cursor-text"
+                            contentEditable={true}
+                            suppressContentEditableWarning={true}
+                            onBlur={(e) => handleInlineEdit("hiv", e.currentTarget.innerText)}
+                          >
+                            {hivVal}
+                          </span>
+                        </td>
+                        <td className="border border-slate-200 p-3 text-slate-500">test</td>
+                        <td className="border border-slate-200 p-3 text-slate-500"></td>
+                      </tr>
+                      <tr className="text-slate-800 text-xs md:text-sm">
+                        <td className="border border-slate-200 p-3">TPHA</td>
+                        <td className="border border-slate-200 p-3 text-slate-800">
+                          <span 
+                            className="edit-field border-b border-dashed border-slate-300 hover:border-blue-500 focus:outline-none focus:bg-white px-1 cursor-text"
+                            contentEditable={true}
+                            suppressContentEditableWarning={true}
+                            onBlur={(e) => handleInlineEdit("tpha", e.currentTarget.innerText)}
+                          >
+                            {tphaVal}
+                          </span>
+                        </td>
+                        <td className="border border-slate-200 p-3 text-slate-500">test</td>
+                        <td className="border border-slate-200 p-3 text-slate-500"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Footer Section */}
+                <div className="border-t-[3px] border-[#1b84d6] pt-4 pb-2 text-center text-xs text-slate-500 font-semibold leading-relaxed">
+                  © 2026 Medilab Diagnostic Center — All rights reserved.<br />
+                  Designed & Verified by Daryeel Tech IT Team
+                </div>
+
+              </div>
+            </div>
+          </div>
+
           {/* EXPORT / PRINT ACTION BUTTONS UNDER THE REPORT SHEET (NO-PRINT) */}
           <div className="no-print mt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
@@ -1370,9 +1633,9 @@ export default function App() {
       </main>
 
       {/* FOOTER ADVISORY BANNER - NO-PRINT */}
-      <footer className="no-print mt-auto bg-slate-950 border-t border-slate-800 py-4 text-center text-xs text-slate-400">
+      <footer style={{ backgroundColor: '#f4f5f2' }} className="no-print mt-auto border-t border-slate-300 py-4 text-center text-xs text-slate-700">
         <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-3">
-          <p>© 2026 Medilab Diagnostic Center. Designed & Verified by Daryeel Tech IT Team.</p>
+          <p>© 2026 Lab Verification Center. Designed & Verified by Tech IT Team.</p>
         </div>
       </footer>
 
@@ -1395,34 +1658,35 @@ export default function App() {
               initial={{ scale: 0.95, y: 15, opacity: 0 }}
               animate={{ scale: 1, y: 0, opacity: 1 }}
               exit={{ scale: 0.95, y: 15, opacity: 0 }}
-              className="relative bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl flex flex-col max-h-[90vh] overflow-y-auto"
+              style={{ backgroundColor: '#f4f5f2' }}
+              className="relative border border-slate-300 rounded-2xl max-w-lg w-full p-6 shadow-2xl flex flex-col max-h-[90vh] overflow-y-auto"
             >
               
-              <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-300 mb-4">
                 <div className="flex items-center gap-2">
-                  <div className="p-1.5 bg-emerald-500/20 text-emerald-400 rounded-lg">
+                  <div className="p-1.5 bg-emerald-500/10 text-emerald-600 rounded-lg">
                     <Plus className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-display font-bold text-white text-base">
+                    <h3 className="font-display font-bold text-slate-900 text-base">
                       New Clearance Registration
                     </h3>
-                    <p className="text-xs text-slate-400">Add medical logs onto local memory database</p>
+                    <p className="text-xs text-slate-500">Add medical logs onto local memory database</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setShowCreateModal(false)}
-                  className="p-1 hover:bg-slate-800 rounded-full text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  className="p-1 hover:bg-slate-200 rounded-full text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <form onSubmit={handleCreateReportSubmit} className="flex flex-col gap-4 text-sm">
+              <form onSubmit={handleCreateReportSubmit} className="flex flex-col gap-4 text-sm text-slate-800">
                 
                 <div className="grid grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                    <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">
                       Patient ID (Lambarka)
                     </label>
                     <input
@@ -1431,12 +1695,12 @@ export default function App() {
                       placeholder="e.g. 2042"
                       value={newPatient.id}
                       onChange={(e) => setNewPatient((prev) => ({ ...prev, id: e.target.value.trim() }))}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-white placeholder:text-slate-650 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                    <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">
                       Boono #
                     </label>
                     <input
@@ -1445,12 +1709,12 @@ export default function App() {
                       placeholder="e.g. 2026"
                       value={newPatient.boono}
                       onChange={(e) => setNewPatient((prev) => ({ ...prev, boono: e.target.value.trim() }))}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-white placeholder:text-slate-650 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                    <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">
                       Passport No
                     </label>
                     <input
@@ -1458,13 +1722,13 @@ export default function App() {
                       placeholder="e.g. FS879183"
                       value={newPatient.passportNo}
                       onChange={(e) => setNewPatient((prev) => ({ ...prev, passportNo: e.target.value }))}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-white placeholder:text-slate-650 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">
                     Full Patient Name
                   </label>
                   <input
@@ -1473,31 +1737,31 @@ export default function App() {
                     placeholder="e.g. OLEKSANDR PETRENKO"
                     value={newPatient.name}
                     onChange={(e) => setNewPatient((prev) => ({ ...prev, name: e.target.value }))}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-white placeholder:text-slate-650 focus:outline-none focus:ring-2 focus:ring-emerald-500 uppercase"
+                    className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 uppercase font-bold"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                    <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">
                       Age
                     </label>
                     <input
                       type="number"
                       value={newPatient.age}
                       onChange={(e) => setNewPatient((prev) => ({ ...prev, age: Number(e.target.value) }))}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                    <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">
                       Gender
                     </label>
                     <select
                       value={newPatient.gender}
                       onChange={(e) => setNewPatient((prev) => ({ ...prev, gender: e.target.value as any }))}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     >
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
@@ -1508,7 +1772,7 @@ export default function App() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                    <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">
                       Company / Organization
                     </label>
                     <input
@@ -1516,12 +1780,12 @@ export default function App() {
                       placeholder="e.g. TURKISH AIRLINES"
                       value={newPatient.company}
                       onChange={(e) => setNewPatient((prev) => ({ ...prev, company: e.target.value }))}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-white placeholder:text-slate-650 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                    <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">
                       Phone Number
                     </label>
                     <input
@@ -1529,52 +1793,52 @@ export default function App() {
                       placeholder="e.g. 839180"
                       value={newPatient.phone}
                       onChange={(e) => setNewPatient((prev) => ({ ...prev, phone: e.target.value }))}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-white placeholder:text-slate-650 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                    <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">
                       Doctor Name
                     </label>
                     <input
                       type="text"
                       value={newPatient.doctor}
                       onChange={(e) => setNewPatient((prev) => ({ ...prev, doctor: e.target.value }))}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                    <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">
                       Result Release Date
                     </label>
                     <input
                       type="date"
                       value={newPatient.resultDate}
                       onChange={(e) => setNewPatient((prev) => ({ ...prev, resultDate: e.target.value }))}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
+                      className="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
                     />
                   </div>
                 </div>
 
                 {/* Immunology Panel Results Selection */}
-                <div className="bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/80 mt-2">
-                  <span className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-1">
-                    <Layers className="w-3.5 h-3.5 text-blue-400" /> Bio-Assay Results Matrix
+                <div className="bg-white p-3.5 rounded-xl border border-slate-300 mt-2">
+                  <span className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-3 flex items-center gap-1">
+                    <Layers className="w-3.5 h-3.5 text-emerald-600" /> Bio-Assay Results Matrix
                   </span>
                   
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-400 uppercase mb-1">
+                      <label className="block text-[11px] font-semibold text-slate-600 uppercase mb-1">
                         HCV Status
                       </label>
                       <select
                         value={newPatient.hcv}
                         onChange={(e) => setNewPatient((prev) => ({ ...prev, hcv: e.target.value }))}
-                        className="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1 text-xs text-white"
+                        className="w-full bg-white border border-slate-300 rounded px-2.5 py-1 text-xs text-slate-800"
                       >
                         <option value="Negative">Negative</option>
                         <option value="Positive">Positive</option>
@@ -1582,13 +1846,13 @@ export default function App() {
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-400 uppercase mb-1">
+                      <label className="block text-[11px] font-semibold text-slate-600 uppercase mb-1">
                         Hep B Surface Ag
                       </label>
                       <select
                         value={newPatient.hepB}
                         onChange={(e) => setNewPatient((prev) => ({ ...prev, hepB: e.target.value }))}
-                        className="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1 text-xs text-white"
+                        className="w-full bg-white border border-slate-300 rounded px-2.5 py-1 text-xs text-slate-800"
                       >
                         <option value="Negative">Negative</option>
                         <option value="Positive">Positive</option>
@@ -1596,13 +1860,13 @@ export default function App() {
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-400 uppercase mb-1">
+                      <label className="block text-[11px] font-semibold text-slate-600 uppercase mb-1">
                         HIV Test Status
                       </label>
                       <select
                         value={newPatient.hiv}
                         onChange={(e) => setNewPatient((prev) => ({ ...prev, hiv: e.target.value }))}
-                        className="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1 text-xs text-white"
+                        className="w-full bg-white border border-slate-300 rounded px-2.5 py-1 text-xs text-slate-800"
                       >
                         <option value="Negative">Negative</option>
                         <option value="Positive">Positive</option>
@@ -1610,13 +1874,13 @@ export default function App() {
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-400 uppercase mb-1">
+                      <label className="block text-[11px] font-semibold text-slate-600 uppercase mb-1">
                         TPHA Syphilis
                       </label>
                       <select
                         value={newPatient.tpha}
                         onChange={(e) => setNewPatient((prev) => ({ ...prev, tpha: e.target.value }))}
-                        className="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1 text-xs text-white"
+                        className="w-full bg-white border border-slate-300 rounded px-2.5 py-1 text-xs text-slate-800"
                       >
                         <option value="Negative">Negative</option>
                         <option value="Positive">Positive</option>
@@ -1627,11 +1891,11 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="flex justify-end gap-2 pt-3 border-t border-slate-800/80 mt-2">
+                <div className="flex justify-end gap-2 pt-3 border-t border-slate-300 mt-2">
                   <button
                     type="button"
                     onClick={() => setShowCreateModal(false)}
-                    className="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-4 py-2 rounded-xl text-xs transition-colors cursor-pointer"
+                    className="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-4 py-2 rounded-xl text-xs transition-colors cursor-pointer"
                   >
                     Ka laabo (Cancel)
                   </button>
