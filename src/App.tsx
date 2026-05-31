@@ -243,20 +243,20 @@ export default function App() {
     clone.style.background = "#ffffff";
 
     const opt = {
-      margin:       0, // Zero margin fits built-in 35px padding edge-to-edge beautifully
-      filename:     filename,
-      image:        { type: "jpeg", quality: 0.98 },
-      html2canvas:  { 
+      margin: 0, // Margins are controlled via the @page rule
+      filename: filename,
+      image: { type: "jpeg", quality: 1 }, // High quality
+      html2canvas: { 
         scale: 2, 
         useCORS: true, 
-        logging: false,
         letterRendering: true,
-        allowTaint: true,
-        windowWidth: 800, // Forces html2canvas to render the clone in simulated 800px width
-        scrollX: 0,
-        scrollY: 0
+        windowWidth: 800 // Forces consistent render width
       },
-      jsPDF:        { unit: "mm", format: "a4", orientation: "portrait" }
+      jsPDF: { 
+        unit: "mm", 
+        format: "a4", 
+        orientation: "portrait" 
+      }
     };
 
     const exporter = (html2pdf as any).default || html2pdf;
@@ -978,199 +978,28 @@ export default function App() {
                   /* Media print query for high contrast, absolute high fidelity, and A4 precision */
                   @media print {
                     @page {
-                      size: A4 portrait;
-                      margin: 5mm 5mm 5mm 5mm !important;
+                      /* Define exact A4 size */
+                      size: 210mm 297mm;
+                      margin: 10mm; /* Printer-safe margin */
                     }
-                    * {
-                      -webkit-print-color-adjust: exact !important;
-                      print-color-adjust: exact !important;
-                    }
-                    body, html {
-                      background: #fff !important;
-                      color: #000000 !important;
-                      width: 100% !important;
-                      height: auto !important;
-                    }
-                    /* Ensure parents do not affect print sizing */
-                    #root,
-                    #medilab-system-root, 
-                    main, 
-                    #report-view-canvas, 
-                    #report-view-canvas > div, 
-                    .print-container, 
-                    .medilab-sheet {
-                      background: transparent !important;
-                      background-color: transparent !important;
-                      padding: 0 !important;
-                      margin: 0 !important;
-                      border: none !important;
-                      box-shadow: none !important;
-                      max-width: 100% !important;
-                      width: 100% !important;
-                      min-height: auto !important;
-                      height: auto !important;
+
+                    /* Force the target container to fill the A4 page */
+                    #laboratory-report-sheet {
                       display: block !important;
-                      position: static !important;
-                      overflow: visible !important;
+                      width: 100% !important;
+                      max-width: 100% !important;
+                      margin: 0 !important;
+                      padding: 0 !important;
+                      box-shadow: none !important;
+                      border: none !important;
+                      /* Ensure no breaks occur inside the card */
+                      break-inside: avoid;
+                      page-break-inside: avoid;
                     }
-                    /* Explicitly suppress any no-print items even if they are child divs */
-                    #report-view-canvas > div.no-print,
-                    .no-print,
-                    .no-print * {
+
+                    /* Hide UI elements */
+                    .no-print {
                       display: none !important;
-                      height: 0 !important;
-                      min-height: 0 !important;
-                      max-height: 0 !important;
-                      padding: 0 !important;
-                      margin: 0 !important;
-                      border: none !important;
-                      overflow: hidden !important;
-                      opacity: 0 !important;
-                      visibility: hidden !important;
-                    }
-                    .container-sheet {
-                      display: block !important;
-                      width: 100% !important;
-                      max-width: 100% !important;
-                      min-height: auto !important;
-                      padding: 16px 20px !important;
-                      margin: 0 auto !important;
-                      border: none !important;
-                      border-radius: 0 !important;
-                      box-shadow: none !important;
-                      background: #fff !important;
-                      color: #000000 !important;
-                      box-sizing: border-box !important;
-                      page-break-inside: avoid !important;
-                      break-inside: avoid !important;
-                    }
-                    .container-sheet .header {
-                      border-bottom: 2px solid #e2e8f0 !important;
-                      padding-bottom: 8px !important;
-                      margin-bottom: 12px !important;
-                    }
-                    .container-sheet .logo-container {
-                      width: 55px !important;
-                      height: 55px !important;
-                    }
-                    .container-sheet .logo {
-                      width: 55px !important;
-                      height: 55px !important;
-                    }
-                    .container-sheet .lab-name {
-                      font-size: 18px !important;
-                    }
-                    .container-sheet .lab-address,
-                    .container-sheet .lab-tel {
-                      font-size: 10px !important;
-                    }
-                    .container-sheet .meta-info {
-                      font-size: 11px !important;
-                    }
-                    .container-sheet .info-grid {
-                      gap: 10px !important;
-                      margin-bottom: 14px !important;
-                    }
-                    .container-sheet .box {
-                      border: 1px solid #e2e8f0 !important;
-                      background: #fff !important;
-                      padding: 10px 14px !important;
-                      border-radius: 12px !important;
-                    }
-                    .container-sheet .row {
-                      margin-bottom: 4px !important;
-                    }
-                    .container-sheet .label {
-                      width: 110px !important;
-                      color: #4b5563 !important;
-                      font-weight: 500 !important;
-                    }
-                    .container-sheet .value {
-                      color: #000000 !important;
-                      font-weight: 700 !important;
-                    }
-                    .container-sheet .section-title {
-                      color: #155a79 !important;
-                      font-weight: 700 !important;
-                      margin-bottom: 6px !important;
-                    }
-                    .container-sheet .results-table {
-                      margin-bottom: 14px !important;
-                    }
-                    .container-sheet .results-table th {
-                      color: #155a79 !important;
-                      border-bottom: 1.5px solid #cbd5e1 !important;
-                      font-weight: 400 !important;
-                      padding: 4px 6px !important;
-                      font-size: 11px !important;
-                    }
-                    .container-sheet .results-table td {
-                      border-bottom: 1px solid #f1f5f9 !important;
-                      color: #000000 !important;
-                      font-weight: 400 !important;
-                      padding: 4px 6px !important;
-                      font-size: 11px !important;
-                    }
-                    .container-sheet .results-table tr.category td {
-                      color: #155a79 !important;
-                      font-weight: 400 !important;
-                      padding: 8px 6px 4px 6px !important;
-                      font-size: 11.5px !important;
-                    }
-                    .container-sheet .sig-section {
-                      margin-top: 14px !important;
-                      padding-top: 10px !important;
-                      border-top: 1.5px dashed #cbd5e1 !important;
-                    }
-                    .container-sheet .sig-box {
-                      color: #374151 !important;
-                      font-size: 11px !important;
-                    }
-                    .container-sheet .sig-box img {
-                      height: 55px !important;
-                      width: auto !important;
-                      margin-top: 8px !important;
-                    }
-                    .container-sheet .footer {
-                      margin-top: 14px !important;
-                      padding-top: 8px !important;
-                      border-top: 1.5px solid #e2e8f0 !important;
-                      color: #4b5563 !important;
-                      display: flex !important;
-                      justify-content: space-between !important;
-                      align-items: center !important;
-                      font-size: 10px !important;
-                    }
-                    .container-sheet .qr-section {
-                      margin-top: 12px !important;
-                    }
-                    .container-sheet .qr-section img {
-                      width: 64px !important;
-                      height: 64px !important;
-                    }
-                    .container-sheet .qr-section div {
-                      font-size: 9px !important;
-                      margin-top: 4px !important;
-                    }
-                    .container-sheet .meta-row {
-                      margin-bottom: 4px !important;
-                      white-space: nowrap !important;
-                      display: block !important;
-                    }
-                    .container-sheet .meta-label,
-                    .container-sheet .meta-value {
-                      display: inline-block !important;
-                      vertical-align: middle !important;
-                      line-height: 1.2 !important;
-                    }
-                    .container-sheet .meta-label {
-                      font-weight: 700 !important;
-                      color: #0f172a !important;
-                      margin-right: 4px !important;
-                    }
-                    .container-sheet .meta-value {
-                      font-weight: 400 !important;
-                      color: #1e293b !important;
                     }
                   }
                 `}} />

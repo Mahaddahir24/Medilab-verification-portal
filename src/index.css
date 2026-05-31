@@ -10,62 +10,27 @@
 /* Print optimizations for the diagnostic report */
 @media print {
   @page {
-    size: portrait;
-    margin: 8mm 12mm 8mm 12mm !important;
-  }
-  
-  html, body {
-    background: white !important;
-    color: black !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
-    height: auto !important;
-    overflow: visible !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
+    /* Define exact A4 size */
+    size: 210mm 297mm;
+    margin: 10mm; /* Printer-safe margin */
   }
 
-  /* Reset layout constraints from standard UI to prevent double pagination */
-  #root, #medilab-system-root, main, #report-view-canvas, .bg-slate-900 {
+  /* Force the target container to fill the A4 page */
+  #laboratory-report-sheet {
     display: block !important;
-    background: white !important;
-    color: black !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
     width: 100% !important;
     max-width: 100% !important;
-    position: static !important;
-    height: auto !important;
-    min-height: auto !important;
-    max-height: none !important;
-    overflow: visible !important;
-  }
-
-  .no-print {
-    display: none !important;
-  }
-
-  .print-container {
+    margin: 0 !important;
+    padding: 0 !important;
     box-shadow: none !important;
     border: none !important;
-    margin: 0 !important;
-    background: white !important;
-    padding: 0 !important;
-    width: 100% !important;
+    /* Ensure no breaks occur inside the card */
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 
-  .print-card {
-    box-shadow: none !important;
-    border-left: 5px solid #3cb54a !important;
-    background: #fdfdfd !important;
-  }
-
-  .print-header {
-    box-shadow: none !important;
-    background: white !important;
-    border-bottom: 2px solid #eaf2fd !important;
+  /* Hide UI elements */
+  .no-print {
+    display: none !important;
   }
 }
