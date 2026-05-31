@@ -186,7 +186,7 @@ export default function App() {
       }
     };
     const handleAfterPrint = () => {
-      document.title = "Medilab Diagnostic Center";
+      document.title = "Lab Verification Report";
     };
     window.addEventListener("beforeprint", handleBeforePrint);
     window.addEventListener("afterprint", handleAfterPrint);
@@ -472,20 +472,12 @@ export default function App() {
         <div className="bg-white border border-[#e2e8f0] p-4 rounded-2xl flex flex-col md:flex-row items-stretch md:items-center justify-between shadow-sm gap-4">
           
           <div className="flex items-center gap-3">
-            <div className="bg-[#2563eb] text-white p-3 rounded-2xl flex items-center justify-center shrink-0">
-              <Shield className="w-6 h-6" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold tracking-wider text-[#10b981] uppercase">
-                  MGQ Airport Gate Health Control
-                </span>
-                <span className="inline-block w-2 h-2 rounded-full bg-[#10b981] animate-ping"></span>
-              </div>
-              <h1 className="font-display text-2xl font-extrabold tracking-tight text-slate-800">
-                MEDILAB <span className="text-[#2563eb] font-semibold">Verify Terminal</span>
-              </h1>
-            </div>
+            <img 
+              src="https://i.postimg.cc/0QTbCSdT/Lapverication.png" 
+              className="h-24 md:h-28 w-auto object-contain" 
+              alt="Lab Verification Report Logo" 
+              referrerPolicy="no-referrer"
+            />
           </div>
 
           <div className="flex flex-wrap items-center gap-6 text-sm text-slate-600">
@@ -496,7 +488,7 @@ export default function App() {
               </div>
               <div>
                 <p className="text-[9px] text-slate-400 uppercase font-extrabold tracking-wider leading-none mb-0.5">Station</p>
-                <p className="text-slate-800 font-bold text-sm leading-tight">Waberi, Mogadishu-Somalia</p>
+                <p className="text-slate-800 font-bold text-sm leading-tight">Global</p>
               </div>
             </div>
             
@@ -530,8 +522,8 @@ export default function App() {
           {/* SEARCH & QUICK VERIFY CARD */}
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2 text-slate-500 text-xs font-semibold uppercase tracking-wider">
-              <span>💼</span>
-              <span>Search Passport</span>
+              <span>🧑‍⚕️</span>
+              <span>Search Patients</span>
             </div>
             
             <div className="flex items-center gap-3">
@@ -564,6 +556,16 @@ export default function App() {
                 <span>Reload</span>
               </button>
             </div>
+
+            {/* CREATE NEW REPORT BUTTON */}
+            <button
+              type="button"
+              onClick={() => setShowCreateModal(true)}
+              className="w-full bg-[#f0fdf4] border border-[#bbf7d0] text-[#16a34a] hover:bg-[#dcfce7] font-bold py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Create New Report</span>
+            </button>
 
             {/* QUICK PASSENGER SELECTION LIST */}
             <div className="flex flex-col gap-3">
@@ -649,88 +651,12 @@ export default function App() {
             </div>
           </div>
 
-          {/* SCANNER REAL-TIME LINK GENERATOR */}
-          <div className="bg-white p-5 rounded-2xl border border-[#e2e8f0] flex flex-col gap-4 shadow-sm">
-            <div className="flex items-center justify-between">
-              <h2 className="text-sm font-extrabold text-slate-800 tracking-wide uppercase flex items-center gap-2 font-display">
-                <QrCode className="w-5 h-5 text-[#2563eb]" /> QR Verification
-              </h2>
-              
-              <button
-                type="button"
-                onClick={() => {
-                  navigator.clipboard.writeText(verificationLink);
-                  alert("Link-ga waa la koobiyey! (Link Copied!)");
-                }}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 text-[#2563eb] hover:bg-slate-50 transition-colors text-xs font-semibold rounded-lg shadow-sm cursor-pointer"
-              >
-                <span>📋</span>
-                <span>Copy Link</span>
-              </button>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-stretch">
-              {/* Left col: Host URL & QR code */}
-              <div className="md:col-span-5 flex flex-col gap-3">
-                <div>
-                  <p className="text-[10px] font-bold text-slate-400 tracking-wider mb-1 uppercase text-slate-400">Production Host URL</p>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={customBaseUrl}
-                      onChange={(e) => setCustomBaseUrl(e.target.value)}
-                      className="bg-[#f8fafc] border border-[#e2e8f0] text-slate-700 text-xs font-mono px-3 py-2 pr-8 rounded-xl focus:outline-none focus:border-blue-500 w-full"
-                      placeholder="https://mymedilabscom.vercel.app"
-                    />
-                    <span 
-                      className="absolute right-2.5 top-2.5 text-slate-400 cursor-pointer text-xs"
-                      onClick={() => {
-                        navigator.clipboard.writeText(customBaseUrl);
-                        alert("Host base URL copied!");
-                      }}
-                      title="Copy Base URL"
-                    >
-                      📋
-                    </span>
-                  </div>
-                </div>
-
-                <div className="bg-white p-3 border border-slate-200 rounded-2xl shadow-sm w-36 h-36 flex items-center justify-center relative mx-auto select-none mt-1">
-                  {activeReport ? (
-                    <>
-                      <img
-                        src={qrCodeUrl}
-                        alt="Immigration QR code"
-                        className="w-32 h-32 select-none"
-                        referrerPolicy="no-referrer"
-                      />
-                      {/* Internal logo inside QR code simulation */}
-                      <div className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-white p-1.5 rounded-md border border-slate-100 shadow-sm">
-                        <span className="text-[10px] font-extrabold text-[#0459a8]">MD</span>
-                      </div>
-                    </>
-                  ) : (
-                    <div className="w-32 h-32 flex items-center justify-center text-slate-950 font-mono text-xs">
-                      Generating QR...
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Right col: Target Verification Link */}
-              <div className="md:col-span-7 flex flex-col justify-start">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Target Verification Link</p>
-                <div className="font-mono text-[11px] text-[#147a46] break-all bg-[#f4fbf7] p-3 rounded-2xl border border-dashed border-[#a7f3d0] flex-1 leading-normal overflow-y-auto max-h-[195px] text-left">
-                  {verificationLink}
-                </div>
-              </div>
-            </div>
-          </div>
 
           {/* ACTION & INTEGRITY DEBUNG CONTROL */}
           <div className="bg-white p-5 rounded-2xl border border-[#e2e8f0] flex flex-col gap-4 shadow-sm">
             <h2 className="text-sm font-extrabold text-slate-800 tracking-wide uppercase flex items-center gap-2 font-display">
-              <ShieldCheck className="w-5 h-5 text-emerald-500" /> Verification Testing Sandbox
+              <ShieldCheck className="w-5 h-5 text-emerald-500" /> Verification Control
             </h2>
             
             <div className="flex flex-col gap-4">
@@ -768,64 +694,9 @@ export default function App() {
                   <div className="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
                 </label>
               </div>
-
-              {/* Row 3: Buttons */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 mt-2">
-                <button
-                  type="button"
-                  onClick={handleDownloadPDF}
-                  disabled={isExporting}
-                  className="bg-[#fff1f2] border border-[#fecdd3] text-[#e11d48] hover:bg-[#ffe4e6] font-[#e11d48] font-bold py-3 px-3 rounded-2xl text-xs flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer disabled:opacity-50"
-                  title="Export laboratory report as PDF"
-                >
-                  {isExporting ? (
-                    <>
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                      <span>Exporting...</span>
-                    </>
-                  ) : (
-                    <>
-                      <FileDown className="w-4 h-4" />
-                      <span>Export PDF</span>
-                    </>
-                  )}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handlePrint}
-                  className="bg-[#eff6ff] border border-[#bfdbfe] text-[#2563eb] hover:bg-[#dbeafe] font-bold py-3 px-3 rounded-2xl text-xs flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer"
-                  title="Print laboratory report"
-                >
-                  <Printer className="w-4 h-4" />
-                  <span>Print Report</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setShowCreateModal(true)}
-                  className="bg-[#f0fdf4] border border-[#bbf7d0] text-[#16a34a] hover:bg-[#dcfce7] font-bold py-3 px-3 rounded-2xl text-xs flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>Create New Report</span>
-                </button>
-              </div>
             </div>
           </div>
 
-          {/* ADVISORY FOOTNOTE */}
-          <div className="text-xs text-slate-500 leading-snug px-2 flex flex-col md:flex-row items-start md:items-center justify-between border-t border-slate-200/60 pt-4 mt-2 gap-3">
-            <div className="flex items-center gap-2">
-              <span className="text-sm shrink-0">🛡️</span>
-              <span>Security checkpoints are located next to Dahabshiil Bank in Mogadishu.</span>
-            </div>
-            <div className="shrink-0 text-[11px]">
-              <span className="text-slate-400">Support: </span>
-              <a href="mailto:m.labsdiagnostic@gmail.com" className="text-blue-600 font-bold hover:underline">
-                m.labsdiagnostic@gmail.com
-              </a>
-            </div>
-          </div>
         </section>
 
         {/* RIGHT PANEL: LIVE REPORT VIEW RENDERER (RESPONSIVE VIEW) */}
@@ -1461,6 +1332,39 @@ export default function App() {
               </div>
             </div>
           </div>
+
+          {/* EXPORT / PRINT ACTION BUTTONS UNDER THE REPORT SHEET (NO-PRINT) */}
+          <div className="no-print mt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button
+              type="button"
+              onClick={handleDownloadPDF}
+              disabled={isExporting}
+              className="w-full sm:w-auto bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 font-bold py-3 px-6 rounded-2xl text-xs flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer disabled:opacity-50"
+              title="Export laboratory report as PDF"
+            >
+              {isExporting ? (
+                <>
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  <span>Exporting...</span>
+                </>
+              ) : (
+                <>
+                  <FileDown className="w-4 h-4" />
+                  <span>Export PDF</span>
+                </>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={handlePrint}
+              className="w-full sm:w-auto bg-blue-50 border border-blue-200 text-blue-600 hover:bg-blue-100 font-bold py-3 px-6 rounded-2xl text-xs flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer"
+              title="Print laboratory report"
+            >
+              <Printer className="w-4 h-4" />
+              <span>Print Report</span>
+            </button>
+          </div>
         </section>
 
       </main>
@@ -1469,12 +1373,6 @@ export default function App() {
       <footer className="no-print mt-auto bg-slate-950 border-t border-slate-800 py-4 text-center text-xs text-slate-400">
         <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-3">
           <p>© 2026 Medilab Diagnostic Center. Designed & Verified by Daryeel Tech IT Team.</p>
-          <div className="flex items-center gap-2">
-            <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></span>
-            <span className="font-mono text-[11px] text-slate-500">
-              Cloud Service Connected to Mogadishu Port Health Network
-            </span>
-          </div>
         </div>
       </footer>
 
